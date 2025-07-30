@@ -1,7 +1,0 @@
-[
-    {
-        "type": "customQuery",
-        "path": "content.transformations[0].dataAdapter.object.customQuery",
-        "value": "SELECT \nCAST(rut_corredor AS CHARACTER VARYING(200)) AS rut_corredor,\nCAST(periodo_vencimiento AS CHARACTER VARYING(200)) AS periodo_vencimiento,\nCAST(\"c\u00c3\u00b3digo corredor\" AS CHARACTER VARYING(200)) AS codigo_corredor ,\nCAST(\"n\u00c2\u00b0 poliza\" AS CHARACTER VARYING(200)) AS numero_poliza ,\nCAST(\"n\u00c2\u00b0 certificado\" AS CHARACTER VARYING(200)) AS  numero_certificado ,\nCAST(\"nombre tomador\" AS CHARACTER VARYING(200)) AS  nombre_tomador,\nCAST(ramo AS CHARACTER VARYING(200)) AS ramo,\nCAST(\"prima al vencimiento\" AS CHARACTER VARYING(200)) AS prima_al_vencimiento,\nCAST(\"fecha termino vigencia\" AS CHARACTER VARYING(200)) AS fecha_termino_vigencia,\nCAST(\"prima a renovar\" AS CHARACTER VARYING(200)) AS prima_a_renovar ,\nCAST(estado AS CHARACTER VARYING(200)) AS  estado,\nCAST(\"cantidad de siniestros\" AS CHARACTER VARYING(200)) AS cantidad_de_siniestros,\nCAST(\"% comisi\u00c3\u00b3n\" AS CHARACTER VARYING(200)) AS porcentaje_comision\nFROM  CDP_DWH.SALESFORCE_RENOVACIONES_TRANSVERSALES_DETALLE;"
-    }
-]

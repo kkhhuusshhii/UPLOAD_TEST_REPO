@@ -1,7 +1,0 @@
-[
-    {
-        "type": "customQuery",
-        "path": "content.transformations[0].dataAdapter.object.customQuery",
-        "value": "SELECT \nCAST(periodo AS CHARACTER VARYING(200)) AS periodo,\nCAST(rut_corredor AS CHARACTER VARYING(200)) AS rut_corredor,\nCAST(intermediario_lider AS CHARACTER VARYING(200)) AS intermediario_lider,\nCAST(cotizaciones AS CHARACTER VARYING(200)) AS cotizaciones,\nCAST(cotizaciones_promedio AS CHARACTER VARYING(200)) AS cotizaciones_promedio,\nCAST(emisiones AS CHARACTER VARYING(200)) AS emisiones,\nCAST(conversion AS CHARACTER VARYING(200)) AS conversion,\nCAST(emisiones_promedio AS CHARACTER VARYING(200)) AS emisiones_promedio,\nCAST(conversion_promedio AS CHARACTER VARYING(200)) AS conversion_promedio\nFROM CDP_DWH.SALESFORCE_COTIZACION_SIN_AGRUPACION ;"
-    }
-]

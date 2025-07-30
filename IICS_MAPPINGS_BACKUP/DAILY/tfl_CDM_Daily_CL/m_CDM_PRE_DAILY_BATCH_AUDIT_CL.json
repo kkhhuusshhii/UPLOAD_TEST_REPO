@@ -1,7 +1,0 @@
-[
-    {
-        "type": "customQuery",
-        "path": "content.transformations[0].dataAdapter.object.customQuery",
-        "value": "select \ncase when MAX_SID is null then 1 else MAX_SID+1 end as batch_id,\n'Daily' as batch_type,\ngetdate() as start_time,\ncast(null as timestamp) as end_time,\n'Running' as status,\n'Taskflow-tfl_CDM_Daily_CL' as description\nfrom \n(SELECT MAX(batch_id) AS MAX_SID FROM data_clientes_cl.cdm_cl_dwh_batch_t)"
-    }
-]

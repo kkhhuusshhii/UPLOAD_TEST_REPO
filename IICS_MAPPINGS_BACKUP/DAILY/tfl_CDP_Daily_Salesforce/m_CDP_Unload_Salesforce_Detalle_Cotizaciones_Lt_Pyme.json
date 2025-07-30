@@ -1,7 +1,0 @@
-[
-    {
-        "type": "customQuery",
-        "path": "content.transformations[0].dataAdapter.object.customQuery",
-        "value": "SELECT \nCAST(codigo_axis AS CHARACTER VARYING(200)) AS codigo_axis,\nCAST(id_solicitud AS CHARACTER VARYING(200)) AS id_solicitud,\nCAST(fecha_cotizacion AS CHARACTER VARYING(200)) AS fecha_cotizacion,\nCAST(rut_tomador AS CHARACTER VARYING(200)) AS rut_tomador,\nCAST(nombre_tomador AS CHARACTER VARYING(200)) AS nombre_tomador,\nCAST(producto AS CHARACTER VARYING(200)) AS producto,\nCAST(prima_poliza AS CHARACTER VARYING(200)) AS prima_poliza\nFROM  CDP_DWH.SALESFORCE_DETALLE_COTIZACIONES_LT_PYME;"
-    }
-]

@@ -1,7 +1,0 @@
-[
-    {
-        "type": "customQuery",
-        "path": "content.transformations[0].dataAdapter.object.customQuery",
-        "value": "SELECT \nCAST(rut_corredor AS CHARACTER VARYING(50)) AS rut_corredor,\nCAST(intermediario_lider AS CHARACTER VARYING(24)) AS intermediario_lider,\nCAST(periodo AS INTEGER) AS periodo,\nCAST(prima_mes_act  AS VARCHAR ) AS prima_mes_act,\nCAST(prima_mes_ant  AS VARCHAR ) AS prima_mes_ant,\nCAST(diferencia_prima  AS VARCHAR ) AS diferencia_prima,\nCAST(crecimiento_mes  AS VARCHAR ) AS crecimiento_mes ,\nCAST(prima_ytd  AS VARCHAR ) AS prima_ytd,\nCAST(crecimiento_ytd  AS VARCHAR ) AS crecimiento_ytd,\nCAST(prima_12m AS VARCHAR ) AS prima_12m,\nCAST(crecimiento_12m  AS VARCHAR ) AS crecimiento_12m \nFROM  CDP_DWH.SALESFORCE_DISTRIBUCION_SIN_AGRUPACION;"
-    }
-]

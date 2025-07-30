@@ -1,7 +1,0 @@
-[
-    {
-        "type": "customQuery",
-        "path": "content.transformations[0].dataAdapter.object.customQuery",
-        "value": "SELECT \nCAST(AA.company_name AS VARCHAR(100)),\nCAST(AA.branch_office_cd_1 AS VARCHAR(10)),\nCAST(AA.branch_office_name_1 AS VARCHAR(100)),\nCAST(AA.branch_office_name_2 AS VARCHAR(100)),\nCAST(AA.management_name AS VARCHAR(100)),\nCAST(AA.regional_name AS VARCHAR(100)),\nCAST(AA.year AS INT),\nCAST(AA.month AS INT),\nLKP.MAX_SID\nFROM\n(SELECT\nSRC.company AS company_name,\nSRC.sucursal1 AS branch_office_name_1,\nSRC.sucursal_id AS branch_office_cd_1,\nSRC.sucursal AS branch_office_name_2,\nSRC.gerencia AS management_name ,\nSRC.regional AS regional_name,\nSRC.agno AS year,\nSRC.mes AS month,\n1 AS  DUMMY,\nROW_NUMBER()OVER(PARTITION BY SRC.company,SRC.sucursal1,SRC.sucursal_id,SRC.sucursal,SRC.gerencia,SRC.regional,SRC.agno,SRC.mes ORDER BY SRC.sucursal_id DESC) RNK\nFROM cdp_stg_dwh.stg_sucursal SRC )AA\nLEFT JOIN (SELECT 1 as DUMMY, max(dim_pln_branch_office_key) AS MAX_SID from cdp_dwh.dim_pln_branch_office_t) LKP\nON LKP.DUMMY=AA.DUMMY\nWHERE RNK=1 and year is not null and month is not null"
-    }
-]

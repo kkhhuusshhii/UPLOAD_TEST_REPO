@@ -1,7 +1,0 @@
-[
-    {
-        "type": "customQuery",
-        "path": "content.transformations[0].dataAdapter.object.customQuery",
-        "value": "select \nCAST(MAX_SID AS BIGINT)               AS llave_tipo_origen  ,\nCAST('axis' AS CHARACTER VARYING(30)) AS sistema_origen,\ncast(cod_origen AS BIGINT) AS cod_origen,\ncast(descripcion_origen AS CHARACTER VARYING(1000)) AS descripcion_origen\nfrom \n(\nselect 1 as cod_origen ,'Contactos-Siniestr' as descripcion_origen\nUnion\nselect 2 as cod_origen ,'Contactos-Tesoreri' as descripcion_origen\nUnion\nselect 3 as cod_origen ,'Contactos-Web' as descripcion_origen\nUnion\nselect 4 as cod_origen ,'Contactos-Suscripcion' as descripcion_origen\nUnion\nselect 5 as cod_origen ,'Contactos-Sin Origen' as descripcion_origen\nUnion\nselect 6 as cod_origen ,'Siniestros Inspecciones' as descripcion_origen\nUnion\nselect 7 as cod_origen ,'Siniestros' as descripcion_origen\nUnion\nselect 8 as cod_origen ,'Portal Clientes' as descripcion_origen\nUnion\nselect 9 as cod_origen ,'Consulta Reclamos' as descripcion_origen\nUnion\nselect 10 as cod_origen ,'Asistencias' as descripcion_origen\nUnion\nselect 11 as cod_origen ,'Proveedor Externos' as descripcion_origen\nUnion\nselect 12 as cod_origen ,'Twilio' as descripcion_origen\nUnion\nselect 13 as cod_origen ,'Salesforce' as descripcion_origen\nUnion\nselect 14 as cod_origen ,'BPM' as descripcion_origen\n)\nLEFT JOIN\n    (   SELECT\n            MAX(llave_tipo_origen) AS MAX_SID\n        FROM\n            data_clientes_cl.cdm_cl_dim_tipo_origen_t ) LKP\nON\n    1 = 1"
-    }
-]

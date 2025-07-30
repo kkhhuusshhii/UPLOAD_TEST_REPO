@@ -1,7 +1,0 @@
-[
-    {
-        "type": "customQuery",
-        "path": "content.transformations[0].dataAdapter.object.customQuery",
-        "value": "SELECT \nCAST(rut_corredor AS CHARACTER VARYING(50)) AS rut_corredor,\nCAST(intermediario_lider AS CHARACTER VARYING(24)) AS intermediario_lider,\nCAST(periodo_contable_renovacion AS CHARACTER VARYING(14)) AS periodo_contable_renovacion,\nCAST(prima_a_renovar AS VARCHAR) AS prima_a_renovar,\nCAST(porcentaje_renovacion AS VARCHAR) AS porcentaje_renovacion,\nCAST(prima_renovada AS VARCHAR) AS  prima_renovada\nFROM CDP_DWH.SALESFORCE_RENOVACION_SIN_AGRUPACION;"
-    }
-]

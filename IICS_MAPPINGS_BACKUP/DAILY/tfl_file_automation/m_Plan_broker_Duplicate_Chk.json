@@ -1,8 +1,0 @@
-[
-    {
-        "type": "pre/post-sql",
-        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
-        "name": "Pre-sql",
-        "value": "select case when CNT > 1 then CNT/0 else CNT end VALIDATION_CHECK\nfrom\n(\nSELECT case when row_num is null then dummy else row_num end CNT FROM\n(\nSELECT 1 as dummy,row_num FROM\n(\nselect ROW_NUMBER()OVER(PARTITION BY sucursal_id,rut_corredor,company,agno,mes order by sucursal_id) row_num\nfrom cdp_stg_dwh.stg_corredor\n)SRC where row_num >1\n)SRC1\n)SRC2"
-    }
-]

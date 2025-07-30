@@ -1,7 +1,0 @@
-[
-    {
-        "type": "customQuery",
-        "path": "content.transformations[0].dataAdapter.object.customQuery",
-        "value": "select \ncast(company as varchar(1000)) as company_name,\ncast(codigo_ramo as varchar(1000)) as codigo_ramo,\ncast(ramo_plan as varchar(1000)) as ramo_plan,\ncast(agno as int) as year,\ncast(mes as int) as month,\ncast('Y' as char(1)) as actv_rec_ind,\nLKP.MAX_SID\nfrom\ncdp_stg_dwh.stg_ramo_plan\nLEFT JOIN (SELECT 1 as DUMMY, max(dim_pln_ramo_key ) AS MAX_SID from cdp_dwh.dim_pln_ramo_plan_t) LKP\nON LKP.DUMMY=1 \nwhere year is not null and month is not null;"
-    }
-]

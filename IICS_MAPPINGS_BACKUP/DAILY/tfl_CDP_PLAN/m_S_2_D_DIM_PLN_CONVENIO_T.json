@@ -1,7 +1,0 @@
-[
-    {
-        "type": "customQuery",
-        "path": "content.transformations[0].dataAdapter.object.customQuery",
-        "value": "select \ncast(company as varchar(100)) as company_name,\ncast(rut_corredor as varchar(35)) as broker_rut_num,\ncast(sucursal_id as varchar(10)) as branch_office_cd_1,\ncast(sucursal1 as varchar(100)) as branch_office_name_1,\ncast(corredor as varchar(100)) as broker_name,\ncast(convenio_id as varchar(100)) as convenio_id,\ncast(convenio as varchar(100)) as convenio_name,\ncast(ejecutivo as varchar(100)) as sales_exec_name,\ncast(sucursal as varchar(100)) as branch_office_name_2,\ncast(regional as varchar(100)) as regional_name,\ncast(gerencia as varchar(100)) as management_name,\ncast(agno as INT) as year,\ncast(mes as INT) as month,\ncast(rut_ejecutivo as varchar(100)) as sales_exec_rut,\ncast('Y' as char(1)) as actv_rec_ind,\nLKP.MAX_SID\nfrom\ncdp_stg_dwh.stg_convenio\nLEFT JOIN (SELECT 1 as DUMMY, max(dim_pln_convenio_key ) AS MAX_SID from cdp_dwh.dim_pln_convenio_t) LKP\nON LKP.DUMMY=1 \nwhere company is not null and rut_corredor is not null \nand sucursal_id is not null and convenio_id is not null \nand year is not null and month is not null"
-    }
-]

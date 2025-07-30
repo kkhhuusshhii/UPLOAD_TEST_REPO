@@ -1,7 +1,0 @@
-[
-    {
-        "type": "customQuery",
-        "path": "content.transformations[0].dataAdapter.object.customQuery",
-        "value": "SELECT batch_id,'Success' as status, getdate() as end_time FROM data_clientes_cl.cdm_cl_dwh_batch_t where batch_type='Daily' \nand description='Taskflow-tfl_CDM_Daily_CL' and status='Running'"
-    }
-]

@@ -1,7 +1,0 @@
-[
-    {
-        "type": "customQuery",
-        "path": "content.transformations[3].dataAdapter.object.customQuery",
-        "value": "select \nid,\nmax(lastmodifieddate) as max_lastmodifieddate \nfrom cdp_ods.sf_recordtype group by id"
-    }
-]
