@@ -1,0 +1,7 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[12].dataAdapter.object.customQuery",
+        "value": "select\nmkt_ref_code,\nmkt_ref_code_desc,\nactv_rec_ind,\nzona_sismica,\nMAX_SID\nfrom\n(\nselect\nsrc.mkt_ref_code,\nsrc.mkt_ref_code_desc,\n'Y' as actv_rec_ind,\nseismic_zone_codes.seismic_zone_number as zona_sismica,\nLKP_MAXSID.MAX_SID,\nrow_number() over (partition by src.mkt_ref_code order by src.ref_rec_eff_dtm desc) as row_cnt\nfrom\n(\nselect\ncase \nwhen REFE.mkt_ref_code is null then REFE.ref_cd else REFE.mkt_ref_code end as mkt_ref_code,\ncase\nwhen trim(cast(REFE.mkt_ref_code_desc as char(35))) is null then REFE.ref_desc else REFE.mkt_ref_code_desc end as mkt_ref_code_desc,\n--current_timestamp as rec_eff_dtm,\nref_rec_eff_dtm,\n1 as dummy\nfrom  cdp_stg_dwh.stg_tref_code_map_variant REFE \nwhere ref_data_set_cd in ('PrdCdg','SISAXIS') and ref_type_cd='region'\n) src\nleft join \n(select * from cdp_dwh.seismic_zone_codes_t) seismic_zone_codes\non src.mkt_ref_code = seismic_zone_codes.region_cd\nleft join\n(select 1 as dummy, max(dim_region_key) as MAX_SID from cdp_dwh.dim_region_t) LKP_MAXSID\non src.dummy = LKP_MAXSID.dummy\n)\nwhere row_cnt = 1"
+    }
+]

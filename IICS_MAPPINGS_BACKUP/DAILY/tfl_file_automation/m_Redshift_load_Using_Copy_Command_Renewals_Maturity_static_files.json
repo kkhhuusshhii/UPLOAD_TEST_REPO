@@ -1,0 +1,26 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "Truncate table adp_dwh.cdp_stg_dwh.penta_formapago;\nTruncate table adp_dwh.cdp_stg_dwh.penta_primafinal;\nTruncate table adp_dwh.cdp_ods.aparot_base_penta;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_stg_dwh.penta_formapago FROM \n's3://$$S3_Bucket_Name/Renewals-Maturity/PENTA_FORMAPAGO.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' csv QUOTE '\"' IGNOREHEADER 1 ;\n\ncopy adp_dwh.cdp_stg_dwh.penta_primafinal FROM \n's3://$$S3_Bucket_Name/Renewals-Maturity/PENTA_PRIMAFINAL.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' csv QUOTE '\"' IGNOREHEADER 1 ;\n\ncopy adp_dwh.cdp_ods.aparot_base_penta FROM \n's3://$$S3_Bucket_Name/Renewals-Maturity/APAROT_BASE_PENTA.csv'\nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' csv QUOTE '\"' IGNOREHEADER 1 ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "Truncate table adp_dwh.cdp_stg_dwh.penta_formapago;\nTruncate table adp_dwh.cdp_stg_dwh.penta_primafinal;\nTruncate table adp_dwh.cdp_ods.aparot_base_penta;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_stg_dwh.penta_formapago FROM \n's3://$$S3_Bucket_Name/Renewals-Maturity/PENTA_FORMAPAGO.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' csv QUOTE '\"' IGNOREHEADER 1 ;\n\ncopy adp_dwh.cdp_stg_dwh.penta_primafinal FROM \n's3://$$S3_Bucket_Name/Renewals-Maturity/PENTA_PRIMAFINAL.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' csv QUOTE '\"' IGNOREHEADER 1 ;\n\ncopy adp_dwh.cdp_ods.aparot_base_penta FROM \n's3://$$S3_Bucket_Name/Renewals-Maturity/APAROT_BASE_PENTA.csv'\nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' csv QUOTE '\"' IGNOREHEADER 1 ;"
+    }
+]

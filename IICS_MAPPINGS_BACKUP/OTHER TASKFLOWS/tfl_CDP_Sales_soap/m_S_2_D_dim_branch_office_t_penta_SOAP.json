@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select \ncast(max_sid as integer) as max_sid ,\ncast(branch_office_cd as varchar(10)) as branch_office_cd,\ncast(branch_office_name as varchar(100)) as branch_office_name,\ncast(branch_office_id as integer) as branch_office_id ,\ncast(src_sys_cd as varchar(10)) as src_sys_cd,\ncast(dim_region_key as integer) as dim_region_key,\ncast(actv_rec_ind as varchar(1)) as actv_rec_ind,\netl_audit_id,\ncast(branch_office_region_cd as varchar(10)) as branch_office_region_cd\nfrom (\nselect \nLKP_MAXSID.MAX_SID AS MAX_SID,\nsrc.* from (\nselect\nNVL(stg_informeventas.branch_office_cd,0) as branch_office_cd ,\nstg_informeventas.branch_office_name as branch_office_name,\nnull as branch_office_id,\n'penta' as src_sys_cd,\nnull as dim_region_key,\n'Y' as actv_rec_ind,\ncast(0 as integer) as etl_audit_id,\nnull as branch_office_region_cd,\n1 as dummy\nfrom \n (SELECT distinct \ncodigo_sucursal as branch_office_cd ,nombre_sucursal as branch_office_name\nFROM cdp_stg_dwh.stg_informeventas WHERE trim(codigo_ramo)='24') stg_informeventas\nwhere branch_office_cd not in \n(select distinct branch_office_cd from cdp_dwh.dim_branch_office_t where src_sys_cd='penta')\n) src\nleft outer join\n(select 1 as dummy, max(dim_branch_office_key) as MAX_SID from cdp_dwh.dim_branch_office_t) LKP_MAXSID\non src.dummy = LKP_MAXSID.dummy\n)"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "DELETE FROM CDP_DWH.dim_branch_office_t\nWHERE src_sys_cd='penta' and etl_audit_id=0;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "DELETE FROM CDP_DWH.dim_branch_office_t\nWHERE src_sys_cd='penta' and etl_audit_id=0;"
+    }
+]

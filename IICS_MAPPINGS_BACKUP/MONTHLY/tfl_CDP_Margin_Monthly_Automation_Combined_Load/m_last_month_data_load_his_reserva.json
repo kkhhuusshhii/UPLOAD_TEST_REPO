@@ -1,0 +1,14 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "call cdp_dwh.sp_monthly_margin_data_to_his_reserva();"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "call cdp_dwh.sp_monthly_margin_data_to_his_reserva();"
+    }
+]

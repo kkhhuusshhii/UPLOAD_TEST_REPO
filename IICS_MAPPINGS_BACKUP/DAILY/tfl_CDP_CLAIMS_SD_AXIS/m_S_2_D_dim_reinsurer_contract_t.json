@@ -1,0 +1,12 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "--casting of target columns as of 17/04\nselect \n--cast(dim_reinsurer_contract_key as integer) as dim_reinsurer_contract_key,\nmax_sid,\nreinsurance_contract_number,\nreinsurance_contract_name,\ncontract_year,\nsrc_sys_cd,\nactv_rec_ind,\netl_audit_id\nfrom\n(select \n--NVL(LKP_MAX_KEY.max_sid,0)+ num as dim_reinsurer_contract_key, \nLKP_MAX_KEY.max_sid, \nCAST(SRC.reinsurance_contract_number as INTEGER) reinsurance_contract_number,\nCAST(SRC.reinsurance_contract_name as varchar) as reinsurance_contract_name,\ncast(substring(SRC.contract_year,1,4) as integer) as contract_year,\nCAST(SRC.src_sys_cd as varchar) as src_sys_cd,\n--SRC.rec_crt_dtm,\n--SRC.rec_updt_dtm,\nSRC.actv_rec_ind ,\nSRC.etl_audit_id\nfrom \n(select \n(SC.scontra )as reinsurance_contract_number,\nrow_number()over (order by reinsurance_contract_number ) AS num,\n(CONTRATOS.tcontra) as reinsurance_contract_name,\n(CODICONTRATOS.finictr) as contract_year,\n'axis' as src_sys_cd,\n--SYSDATE as rec_crt_dtm,\n--SYSDATE as rec_updt_dtm,\n'Y' as actv_rec_ind,\n0 as etl_audit_id,\n1 as dummy\n\nfrom \n(select scontra from cdp_ods.sisaxis_cesionesrea CESIONESREA where  scontra is not null\nUNION \nselect scontra from cdp_ods.sisaxis_contratos CONTRATOS where scontra is not null\nUNION \nselect scontra from cdp_ods.sisaxis_perfiles_contratos PERFILES_CONTRATOS where scontra is not null)SC\nLEFT JOIN  cdp_ods.sisaxis_contratos CONTRATOS\nON SC.scontra=CONTRATOS.scontra\nLEFT JOIN cdp_ods.sisaxis_codicontratos CODICONTRATOS\non CONTRATOS.scontra=CODICONTRATOS.scontra)SRC\nleft outer join \n(\nselect 1 as dummy,max(dim_reinsurer_contract_key) as  max_sid  from  cdp_dwh.dim_reinsurer_contract_t) LKP_MAX_KEY\non SRC.dummy=LKP_MAX_KEY.dummy  \n)"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "SELECT \nDIM.dim_reinsurer_contract_key,\nDIM.src_sys_cd ,\nDIM.reinsurance_contract_number \nFROM \ncdp_dwh.dim_reinsurer_contract_t DIM --"
+    }
+]

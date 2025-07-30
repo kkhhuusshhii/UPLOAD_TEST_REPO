@@ -1,0 +1,12 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select \nadjuster_id,\nadjuster_rut_num,\nadjuster_name,\nadjuster_type_desc,\nadjuster_office_cd,\nadjuster_office_name,\nsrc_sys_cd,\nactv_rec_ind,\nmax_sid\nfrom(SELECT \nsrc.adjuster_id,\nsrc.adjuster_rut_num,\nsrc.adjuster_name,\nsrc.adjuster_type_desc,\nsrc.adjuster_office_cd,\nsrc.adjuster_office_name,\nsrc.src_sys_cd,\n'Y' as actv_rec_ind,\nLKP_MAXSID.max_sid,\nROW_NUMBER()OVER(PARtiTION BY src.adjuster_id order by src.rec_crt_dtm desc) rnk\nFROM (\nselect \ncast('axis' as varchar(10)) as src_sys_cd,\nA.adjuster_id,\nA.adjuster_rut_num,\ntranslate(A.adjuster_name,'#','') as adjuster_name,\nCAST(A.CACTPRO AS VARCHAR(80)) adjuster_type_desc,\nCAST(A.adjuster_office_cd AS VARCHAR(10)) adjuster_office_cd,\nCAST(A.adjuster_office_name AS VARCHAR(100)) adjuster_office_name,\nA.rec_crt_dtm,\n1 dummy from\n(select distinct \nCAST(l.SPERSON AS INTEGER) adjuster_id,\nCAST(p.NNUMNIF AS VARCHAR(35)) adjuster_rut_num,\nCAST(p.tbuscar AS VARCHAR(100)) adjuster_name,\nCASE WHEN l.cactpro= 333 THEN 'Directo'\n\t WHEN l.cactpro= 332 THEN 'Oficial'\n\t ELSE NULL END CACTPRO,\n'' adjuster_office_cd,\n'' adjuster_office_name,\nl.rec_crt_dtm\t\nfrom  cdp_stg_dwh.sisaxis_ASIGPROTRAMI l\nINNER JOIN  cdp_ods.sisaxis_personas p\nON l.SPERSON = p.SPERSON \nWHERE l.CACTPRO in (332,333))A\t\n) src\nleft outer join\n(select 1 as dummy, max(dim_claim_adjuster_key) as MAX_SID from cdp_dwh.dim_claim_adjuster_t) LKP_MAXSID\non src.dummy = LKP_MAXSID.dummy)\nwhere rnk=1;"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "SELECT  \ndim_claim_adjuster_key,\nadjuster_id,\nsrc_sys_cd  \nFROM cdp_dwh.dim_claim_adjuster_t \nwhere src_sys_cd='axis';"
+    }
+]

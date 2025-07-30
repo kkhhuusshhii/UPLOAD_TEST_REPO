@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select SSEGURO,\n\t\tPRIMA,COMISION,\n\t\tmax_sid \nfrom\n(select SSEGURO,\n\t\tcast(PRIMA as numeric(25,10)) as PRIMA,cast(COMISION as numeric(25,10)) as COMISION,\n\t\trow_number()over(partition by SRC.SSEGURO order by SRC.rec_crt_dtm desc ) as row_cnt,\n\t\tLKP_MAX_KEY.max_sid \nfrom \n(\nSELECT    T1.POLIZA  || '-' || T1.ITEM AS SSEGURO,\n((T2.SUM_AFECTA + T2.SUM_EXENTA) / (case when (cast((DATEDIFF(YEAR,(T2.PRO_FEC_VIGDES),(T2.PRO_FEC_VIGHAS)))as INTEGER))=0 then 1 \n else (cast((DATEDIFF(YEAR,(T2.PRO_FEC_VIGDES),(T2.PRO_FEC_VIGHAS)))as INTEGER)) end ))as PRIMA,\n (T2.PRO_DEC_COMISI)/100 AS COMISION,T1.policy_issue_date as rec_crt_dtm\nFROM cdp_stg_dwh.BASE_PENTA T1\nLEFT JOIN (select\n          pro_int_poliza,\n          pro_sma_item,\n          pro_int_endoso,\n          pro_fec_vigdes,\n          pro_fec_vighas,\n          PRO_DEC_AFECTA*isnull(uf_lcl_curr_clsng_val,1) AS SUM_AFECTA,\n          PRO_DEC_EXENTA*isnull(uf_lcl_curr_clsng_val,1) AS SUM_EXENTA,\n          pro_dec_comisi*isnull(uf_lcl_curr_clsng_val,1) AS pro_dec_comisi,\n          row_number() over(partition by pro_int_poliza,pro_sma_item order by pro_int_endoso desc) as rowindex\n        from\n          cdp_ods.bd_produ_x_pro_prodmes tprd\n     left join cdp_dwh.curr_conv_t A\n          on A.curr_cd = DECODE(tprd.pro_tin_moneda,  1,'USD',\n                2,'UD',\n                3,'CLF',\n                4,'CLP',\n                5,'UDA',\n                6,'UTA',\n                7,'EUR'\n                )           \n        and trunc(A.vltn_dtm) = trunc(tprd.pro_fec_ingres)\n        and A.src_sys_cd = 'penta'\n        and A.curr_conv_frequency_cd = 'Daily'\n      where pro_tin_ramo = 9 and pro_sma_tipo = 0\n      ) T2\n      ON T1.POLIZA = T2.PRO_INT_POLIZA\n      AND T1.ITEM = T2.PRO_SMA_ITEM\n      AND T2.rowindex = 1\n)\nsrc\nleft outer join \n(select 1 dummy,max(primas_penta_key) max_sid  from  cdp_stg_dwh.primas_penta) LKP_MAX_KEY on LKP_MAX_KEY.dummy=1)\nwhere SSEGURO is not null and row_cnt=1"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.PRIMAS_PENTA;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[2].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.PRIMAS_PENTA;\ncommit;"
+    }
+]

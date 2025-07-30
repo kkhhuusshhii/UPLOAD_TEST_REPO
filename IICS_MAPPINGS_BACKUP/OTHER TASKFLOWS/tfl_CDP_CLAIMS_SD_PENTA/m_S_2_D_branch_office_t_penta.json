@@ -1,0 +1,18 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "SELECT\nCAST(OFC_CD AS VARCHAR(100)),\nCAST(OFC_NAME AS VARCHAR(100)),\nCAST(SRC_SYS_CD AS VARCHAR(10)),\nCAST(REGION_CD AS VARCHAR(20)),\nLKP_QRY.MAX_SID as MAX_SID,\nCOALESCE (CAST (REGION_KEY AS INTEGER),0) as region_key,\nCAST(ofc_identifier AS INTEGER) as OFC_IDENTIFIER\nFROM \n(\nselect COALESCE (mv2.mkt_ref_code,CAST(pofc.ofi_tin_codigo AS VARCHAR(100))) as ofc_cd,COALESCE(mv2.mkt_ref_code_desc,CAST(mv2.ref_desc as VARCHAR(100))) as ofc_name, \nCOALESCE (mv1.mkt_ref_code,CAST(ofi_tin_codreg AS VARCHAR(100))) as region_cd,rt.dim_region_key as region_key, 'penta' as src_sys_cd,1 as DUMMY, CAST(pofc.ofi_tin_codigo AS VARCHAR(100)) as ofc_identifier\nfrom (SELECT tram.*,RANK() OVER (PARTITION BY tram.ofi_tin_codigo ORDER BY tram.ofi_tin_codigo DESC) AS RNK  from cdp_ods.prdcdg_pro_oficinas tram) as pofc\nleft join  cdp_stg_dwh.stg_tref_code_map_variant mv1 on mv1.ref_cd = ofi_tin_codreg and mv1.src_sys_cd = 'penta' and mv1.ref_type_cd = 'region'  \nleft join  cdp_stg_dwh.stg_tref_code_map_variant mv2 on mv2.ref_cd = pofc.ofi_tin_codigo  and mv2.src_sys_cd = 'penta' and mv2.ref_type_cd = 'branch_office'\nleft join  cdp_dwh.dim_region_t rt on rt.region_cd = mv1.mkt_ref_code \nwhere pofc.rnk=1\n) SRC_QRY\nLEFT JOIN (SELECT 1 as DUMMY, MAX(dim_branch_office_key) AS MAX_SID from cdp_dwh.dim_branch_office_t) LKP_QRY\nON LKP_QRY.DUMMY = SRC_QRY.DUMMY"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "select distinct \ndim_branch_office_key,\nbranch_office_cd,\nbranch_office_name,\nbranch_office_id,\nsrc_sys_cd,\ndim_region_key,\nrec_crt_dtm,\nrec_updt_dtm,\nactv_rec_ind,\netl_audit_id,\nbranch_office_region_cd\nfrom\ncdp_dwh.dim_branch_office_t \nwhere \nsrc_sys_cd='penta'"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[12].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "delete from cdp_dwh.dim_branch_office_t  \n where src_sys_cd='penta';\ncommit;"
+    }
+]

@@ -1,0 +1,18 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select src.Question_cd,\nsrc.Question_Description,\nactv_rec_ind,\nLKP_MAXSID.MAX_SID from(\nselect Question_cd,\nQuestion_Description,\nactv_rec_ind,\n1 dummy from(\n select cast(trim(Question_cd) as varchar(10)) Question_cd,\ncast(trim(Question_Description) as varchar(10000)) Question_Description,\ncast('Y' as char(1)) as actv_rec_ind,\nrow_number()over(partition by Question_cd,Question_Description order by Question_cd) rno  FROM cdp_stg_dwh.stg_nps_questions)\nwhere rno=1 ) src\nleft outer join\n(select 1 as dummy, max(dim_nps_questions_key) as MAX_SID from cdp_dwh.dim_nps_questions_t) LKP_MAXSID\non src.dummy = LKP_MAXSID.dummy"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "SELECT distinct dim_nps_questions_key,trim(Question_cd) Question_cd,trim(Question_Description) Question_Description FROM cdp_dwh.dim_nps_questions_t"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "update  cdp_dwh.dim_insured_t set  insured_name=trim('##' from insured_name) where src_sys_cd='axis';\n\nupdate  cdp_dwh.dim_insured_t set  address_desc=trim('##' from address_desc) where src_sys_cd='axis';\n\ncommit;"
+    }
+]

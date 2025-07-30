@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select 'd' as dummy;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "call cdp_dwh.sp_dim_renewal_all_lob();"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "call cdp_dwh.sp_dim_renewal_all_lob();"
+    }
+]

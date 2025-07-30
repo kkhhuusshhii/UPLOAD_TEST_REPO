@@ -1,0 +1,13 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select * from cdp_rdm.CDP_DRIVER_SCHEDULE where 1=2"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[4]",
+        "name": "Pre SQL",
+        "value": "update cdp_rdm.CDP_DRIVER_SCHEDULE\nset run_stts_cd='R', run_start_dtm=current_timestamp\nwhere audit_id=(select * from (select max(audit_id) from cdp_rdm.CDP_DRIVER_SCHEDULE)AA);\n"
+    }
+]

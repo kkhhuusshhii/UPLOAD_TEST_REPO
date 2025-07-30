@@ -1,0 +1,30 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "SELECT \nSSEGURO ,POLIZA  ,ITEM, CRAMO,ID_SUCURSAL,INI_VIG ,FANULAC  ,FCARPRO ,FVENCIM,FIN_VIG_ORIG ,FIN_VIG_ACT,DIAS_VIGENTE,DIAS_SUSCRITOS,ASEGURADO_RUT ,VEH_CMARCA ,VEH_CMODELO ,VEH_CLASE ,USO ,VEH_ANO ,PATENTE ,VEH_CTIPO ,VEH_TIPO ,TMARCA ,\nTMODELO ,NUM_MOTOR ,CORREDOR_RUT,CORREDOR  ,COD_PRODUCTO ,PRODUCTO ,COD_PLAN  ,PLAN ,DEDUCIBLE ,NUM_ENDOSO  ,CONTRATANTE_RUT ,CONTRATANTE_NOMBRE ,\n FLOTA ,NRO_MASIVO,PRIMA ,PRIMA_TARIFA ,DESCUENTO ,COMISION ,COD_ENDOSO ,TDESCRIP, ENDOSO_AGRUP,COB_PLAN, ORIGEN,LKP_MAX_KEY.max_sid\nfrom\n(SELECT \nT1.SSEGURO ,POLIZA  ,ITEM, T1.CRAMO,T1.ID_SUCURSAL,INI_VIG ,T1.FANULAC  ,T1.FCARPRO ,T1.FVENCIM,FIN_VIG_ORIG ,FIN_VIG_ACT,DIAS_VIGENTE,DIAS_SUSCRITOS,ASEGURADO_RUT ,VEH_CMARCA ,VEH_CMODELO ,VEH_CLASE ,USO ,VEH_ANO ,PATENTE ,VEH_CTIPO ,VEH_TIPO ,TMARCA ,\nTMODELO ,NUM_MOTOR ,CORREDOR_RUT,CORREDOR  ,T6.COD_PRODUCTO ,PRODUCTO ,COD_PLAN  ,PLAN ,DEDUCIBLE ,NUM_ENDOSO  ,T8.CONTRATANTE_RUT ,CONTRATANTE_NOMBRE ,\ncase when ((CFLOTA = 1) OR (T6.COD_PRODUCTO IN (Select distinct prod_flotas_lib from cdp_stg_dwh.renewals_param_axis where prod_flotas_lib IS NOT NULL ) )\nOR (T8.CONTRATANTE_RUT IN (Select distinct contr_flotas_lib from cdp_stg_dwh.renewals_param_axis where contr_flotas_lib IS NOT NULL)))\nthen 1 else 0 end as FLOTA ,NRO_MASIVO,PRIMA ,PRIMA_TARIFA ,DESCUENTO ,COMISION ,COD_ENDOSO ,TDESCRIP, ENDOSO_AGRUP,COB_PLAN, 'axis' AS ORIGEN\nFROM cdp_stg_dwh.BASE_LIB T1\n--LEFT JOIN FECHAS_LIB T2\n--ON T1.SSEGURO = T2.SSEGURO\nLEFT JOIN cdp_stg_dwh.ASEGURADOS_LIB T3\nON T1.SSEGURO = T3.SSEGURO\nLEFT JOIN cdp_stg_dwh.VEHICULOS_LIB T4\nON T1.SSEGURO = T4.SSEGURO\nLEFT JOIN cdp_stg_dwh.CORREDORES_LIB T5\nON T1.SSEGURO = T5.SSEGURO\nLEFT JOIN cdp_stg_dwh.PRODUCTOS_LIB T6\nON T1.SSEGURO = T6.SSEGURO\nLEFT JOIN cdp_stg_dwh.DEDUCIBLES_LIB T7\nON T1.SSEGURO = T7.SSEGURO\nLEFT JOIN cdp_stg_dwh.CONTRATANTES_LIB T8\nON T1.SSEGURO = T8.SSEGURO\nLEFT JOIN cdp_ods.sisaxis_seguros T9\nON T1.SSEGURO = T9.SSEGURO\n--LEFT JOIN NRO_MASIVOS_LIB T10\n--ON T1.SSEGURO = T10.SSEGURO\nLEFT JOIN cdp_stg_dwh.PRIMAS_LIB T11\nON T1.SSEGURO = T11.SSEGURO\nleft join cdp_stg_dwh.ENDOSOS_LIB T12\nON T1.SSEGURO = T12.SSEGURO\nleft join cdp_stg_dwh.COBERTURAS_LIB T13\nON T1.SSEGURO = T13.SSEGURO)src\nleft outer join \n(select 1 dummy,max(BASE_FINAL_LIBERTY_key) max_sid  from  cdp_dwh.BASE_FINAL_LIBERTY) LKP_MAX_KEY\non LKP_MAX_KEY.dummy=1\nwhere SSEGURO is not null"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[3].dataAdapter.object.customQuery",
+        "value": "SELECT base_final_liberty_key,SSEGURO,rec_crt_dtm\nfrom cdp_dwh.base_final_liberty"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_dwh.BASE_FINAL_LIBERTY;\n"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[11].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_dwh.BASE_FINAL_LIBERTY;\ncommit;\n"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[13].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_dwh.BASE_FINAL_LIBERTY;\ncommit;\n"
+    }
+]

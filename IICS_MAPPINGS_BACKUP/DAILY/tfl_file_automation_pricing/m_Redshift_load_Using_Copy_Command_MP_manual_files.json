@@ -1,0 +1,26 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "Truncate table adp_dwh.cdp_stg_dwh.axis_agrupacion_ramo_fecu;\nTruncate table adp_dwh.cdp_stg_dwh.axis_caratula;\nTruncate table adp_dwh.cdp_stg_dwh.axis_division_coberturas;\nTruncate table adp_dwh.cdp_stg_dwh.axis_ramo_fecu;\nTruncate table adp_dwh.cdp_stg_dwh.moni_LDF_Cantidad;\nTruncate table adp_dwh.cdp_stg_dwh.moni_LDF_Monto;\ntruncate table cdp_stg_dwh.pricing_monitoring_parameter ;\ntruncate table cdp_stg_dwh.luzamu_base_liberty_datosveh;\ntruncate table cdp_stg_dwh.luzamu_Base_Ambas_Companias;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_stg_dwh.axis_Agrupacion_Ramo_fecu \nFROM 's3://$$S3_Bucket_Name/Pricing/axis_Agrupacion_Ramo_fecu.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.axis_Caratula \nFROM 's3://$$S3_Bucket_Name/Pricing/axis_Caratula.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.axis_Division_Coberturas \nFROM 's3://$$S3_Bucket_Name/Pricing/axis_Division_Coberturas.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.axis_Ramo_fecu \nFROM 's3://$$S3_Bucket_Name/Pricing/axis_Ramo_fecu.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.moni_LDF_Cantidad\nFROM 's3://$$S3_Bucket_Name/Pricing/LDF_Cantidad.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.moni_LDF_Monto\nFROM 's3://$$S3_Bucket_Name/Pricing/LDF_Monto.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.pricing_monitoring_parameter \nFROM 's3://$$S3_Bucket_Name/Pricing/pricing_monitoring_parameter_file.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.luzamu_base_liberty_datosveh \nFROM 's3://$$S3_Bucket_Name/Pricing/base_liberty_datosveh.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.luzamu_Base_Ambas_Companias \nFROM 's3://$$S3_Bucket_Name/Pricing/base_ambas_companias.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "Truncate table adp_dwh.cdp_stg_dwh.axis_agrupacion_ramo_fecu;\nTruncate table adp_dwh.cdp_stg_dwh.axis_caratula;\nTruncate table adp_dwh.cdp_stg_dwh.axis_division_coberturas;\nTruncate table adp_dwh.cdp_stg_dwh.axis_ramo_fecu;\nTruncate table adp_dwh.cdp_stg_dwh.moni_LDF_Cantidad;\nTruncate table adp_dwh.cdp_stg_dwh.moni_LDF_Monto;\ntruncate table cdp_stg_dwh.pricing_monitoring_parameter ;\ntruncate table cdp_stg_dwh.luzamu_base_liberty_datosveh;\ntruncate table cdp_stg_dwh.luzamu_Base_Ambas_Companias;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_stg_dwh.axis_Agrupacion_Ramo_fecu \nFROM 's3://$$S3_Bucket_Name/Pricing/axis_Agrupacion_Ramo_fecu.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.axis_Caratula \nFROM 's3://$$S3_Bucket_Name/Pricing/axis_Caratula.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.axis_Division_Coberturas \nFROM 's3://$$S3_Bucket_Name/Pricing/axis_Division_Coberturas.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.axis_Ramo_fecu \nFROM 's3://$$S3_Bucket_Name/Pricing/axis_Ramo_fecu.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.moni_LDF_Cantidad\nFROM 's3://$$S3_Bucket_Name/Pricing/LDF_Cantidad.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.moni_LDF_Monto\nFROM 's3://$$S3_Bucket_Name/Pricing/LDF_Monto.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.pricing_monitoring_parameter \nFROM 's3://$$S3_Bucket_Name/Pricing/pricing_monitoring_parameter_file.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.luzamu_base_liberty_datosveh \nFROM 's3://$$S3_Bucket_Name/Pricing/base_liberty_datosveh.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';\n\ncopy adp_dwh.cdp_stg_dwh.luzamu_Base_Ambas_Companias \nFROM 's3://$$S3_Bucket_Name/Pricing/base_ambas_companias.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';"
+    }
+]

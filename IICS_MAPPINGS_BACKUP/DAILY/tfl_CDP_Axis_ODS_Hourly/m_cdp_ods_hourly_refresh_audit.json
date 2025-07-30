@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select 'd' as dummy;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "call cdp_ods_hourly_portal.sp_cdp_ods_hourly_refresh_audit();"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "call cdp_ods_hourly_portal.sp_cdp_ods_hourly_refresh_audit();"
+    }
+]

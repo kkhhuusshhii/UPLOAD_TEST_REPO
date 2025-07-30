@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "SELECT\n\t\tSSEGURO,\n\t\tNUM_ENDOSO,\n\t\tPRIMA,\n\t\tPRIMA_TARIFA,\n\t\tDESCUENTO,\n\t\tCOMISION,\n\t\tmax_sid \nFROM\n(\nSELECT         \n\t\tSSEGURO,\n\t\tNUM_ENDOSO,\n\t\tPRIMA,\n\t\tPRIMA_TARIFA,\n\t\tDESCUENTO,\n\t\tCOMISION,\n\t\tLKP_MAX_KEY.max_sid\nFROM\n(\nSELECT\tT1.SSEGURO,\n\t\tT3.NMOVIMI AS NUM_ENDOSO,\n\t\tcast((T3.PRIMA1 * T5.ITASA) / T6.ITASA as double precision) AS PRIMA,\n\t\tcast((T3.PRIMA_TARIFA1 * T5.ITASA) / T6.ITASA as double precision) AS PRIMA_TARIFA,\n\t\tcast((T3.DESCUENTO1 * T5.ITASA) / T6.ITASA as double precision) AS DESCUENTO,\n\t\tcast (T7.PCOMISI/100 as double precision) AS COMISION\n\t\t/* CASE WHEN CAST((DIAS_SUSCRITOS / 365) AS INTEGER) < 1 THEN 1\n\t\t\t\tELSE CAST((DIAS_SUSCRITOS / 365) AS INTEGER)\n\t\tEND AS ANOS_EXP */\n\nFROM\tcdp_stg_dwh.BASE_LIB T1\n\nLEFT JOIN cdp_ods.SISAXIS_SEGUROS T2\nON T1.SSEGURO = T2.SSEGURO\n\nLEFT JOIN\n\t(SELECT SSEGURO, \n\t\t\tSUM(IPRIANUSEG) AS PRIMA1, \n\t\t\tSUM(IPRITARSEG) AS PRIMA_TARIFA1, \n\t\t\tSUM(IDTOCOM) AS DESCUENTO1, \n\t\t\tNMOVIMI, \n\t\t\tMAX(FCAMBIO) AS FCAMBIO\n\tFROM cdp_ods.SISAXIS_GARANSEG\n\tGROUP BY SSEGURO, NMOVIMI) T3\nON T1.SSEGURO = T3.SSEGURO\n\n\nLEFT JOIN\n\t(SELECT SSEGURO, \n\tCASE WHEN CAST((DIAS_SUSCRITOS / 365) AS INTEGER) < 1 THEN 1\n\t\t\tELSE CAST((DIAS_SUSCRITOS / 365) AS INTEGER)\n\tEND AS ANOS_EXP\n\t\n\tFROM cdp_stg_dwh.base_lib) T4 --USING BASE_LIB INSTEAD OF FECHAS_LIB\nON T1.SSEGURO = T4.SSEGURO\n\n\nLEFT JOIN cdp_ods.SISAXIS_ECO_TIPOCAMBIO T5 /* Trae tasa de cambio Moneda Original a Pesos */\nON T2.CMONSEG = T5.CMONORI /* Uni\u00c3\u00b3n por Tipo Moneda */\nAND TRUNC(T3.FCAMBIO) = TRUNC(T5.FCAMBIO) /*Uni\u00c3\u00b3n por fecha de moneda */\n\nLEFT JOIN cdp_ods.SISAXIS_ECO_TIPOCAMBIO T6 /* Transformaci\u00c3\u00b3n a UF */\nON TRUNC(T5.FCAMBIO) = TRUNC(T6.FCAMBIO)\n\nLEFT JOIN (SELECT DISTINCT SSEGURO, PCOMISI, NMOVIMI FROM cdp_ods.SISAXIS_COMISIONSEGU) T7\nON T1.SSEGURO = T7.SSEGURO\nAND T3.NMOVIMI = T7.NMOVIMI\n\nWHERE T6.CMONORI = 'CLF' )src\nleft outer join \n(select 1 dummy,max(primas_lib1_key) max_sid  from  cdp_stg_dwh.primas_lib1) LKP_MAX_KEY\non LKP_MAX_KEY.dummy=1)\nwhere SSEGURO is not null;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.primas_lib1;\n"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.primas_lib1;\n"
+    }
+]

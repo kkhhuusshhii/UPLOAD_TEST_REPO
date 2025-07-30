@@ -1,0 +1,32 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "Truncate table adp_dwh.cdp_stg_dwh.stg_InformeVentas;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_stg_dwh.stg_InformeVentas FROM \n's3://$$S3_Bucket_Name/staging-zone-policyceded' IAM_ROLE '$$AWS_IAM_ROLE' acceptinvchars maxerror 5 fixedwidth 'MES_CONTABLE:6,POLIZA:10,ITEM:10,CODIGO_COASEGURO:6,NOMBRE_COASEGURO:20,\nRUT_CORREDOR:13,NOMBRE_CORREDOR:95,RUT_EJECUTIVO:13,NOMBRE_EJECUTIVO:30,RUT_CONTRATANTE:13,NOMBRE_CONTRATANTE:65,RUT_ASEGURADO:13,NOMBRE_ASEGURADO:80,CODIGO_CARTERA:6,NOMBRE_CARTERA:30,CODIGO_PRODUCTO:6,NOMBRE_PRODUCTO:65,\nCODIGO_RAMO:6,NOMBRE_RAMO:40,CODIGO_SUCURSAL:6,NOMBRE_SUCURSAL:25,INICIO_VIGENCIA:10,TERMINO_VIGENCIA:10,SITUACION_ITEM:10,CODIGO_MONEDA:6,NOMBRE_MONEDA:10,PRIMA_DIRECTA_MO:20,PRIMA_DIRECTA_UF:20,PRIMA_CEDIDA_MO:20,\nPRIMA_CEDIDA_UF:20,PRIMA_RETENIDA_MO:20,PRIMA_RETENIDA_UF:20,FECHA_PROCESO:12,USUARIO_PROCESO:6' ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "Truncate table adp_dwh.cdp_stg_dwh.stg_InformeVentas;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_stg_dwh.stg_InformeVentas FROM \n's3://$$S3_Bucket_Name/staging-zone-policyceded' IAM_ROLE '$$AWS_IAM_ROLE' acceptinvchars maxerror 5 fixedwidth 'MES_CONTABLE:6,POLIZA:10,ITEM:10,CODIGO_COASEGURO:6,NOMBRE_COASEGURO:20,\nRUT_CORREDOR:13,NOMBRE_CORREDOR:95,RUT_EJECUTIVO:13,NOMBRE_EJECUTIVO:30,RUT_CONTRATANTE:13,NOMBRE_CONTRATANTE:65,RUT_ASEGURADO:13,NOMBRE_ASEGURADO:80,CODIGO_CARTERA:6,NOMBRE_CARTERA:30,CODIGO_PRODUCTO:6,NOMBRE_PRODUCTO:65,\nCODIGO_RAMO:6,NOMBRE_RAMO:40,CODIGO_SUCURSAL:6,NOMBRE_SUCURSAL:25,INICIO_VIGENCIA:10,TERMINO_VIGENCIA:10,SITUACION_ITEM:10,CODIGO_MONEDA:6,NOMBRE_MONEDA:10,PRIMA_DIRECTA_MO:20,PRIMA_DIRECTA_UF:20,PRIMA_CEDIDA_MO:20,\nPRIMA_CEDIDA_UF:20,PRIMA_RETENIDA_MO:20,PRIMA_RETENIDA_UF:20,FECHA_PROCESO:12,USUARIO_PROCESO:6' ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[1].dataAdapter.runtimeAttributes.attributes[15]",
+        "name": "Post-sql",
+        "value": "UPDATE cdp_stg_dwh.stg_InformeVentas \nSET nombre_asegurado = translate(nombre_asegurado,'?',''),\n    nombre_contratante   = translate(nombre_contratante,'?','');"
+    }
+]

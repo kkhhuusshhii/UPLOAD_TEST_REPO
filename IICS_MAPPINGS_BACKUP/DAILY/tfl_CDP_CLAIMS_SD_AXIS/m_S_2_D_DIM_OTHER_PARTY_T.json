@@ -1,0 +1,12 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select Parties_id,\nParties_Rut,\nParties_name,\nparty_subtype_cd,\npary_type_cd,\nparty_type_desc,\nsrc_sys_cd,\nmax_sid from(\nselect src.Parties_id,\nsrc.Parties_Rut,\nsrc.Parties_name,\nsrc.party_subtype_cd,\nsrc.pary_type_cd,\nsrc.party_type_desc,\nsrc.src_sys_cd,\nlkp_max_id.max_sid,\nrow_number()over(partition by src.Parties_id order by src.Parties_id desc) rnk from\n(select  distinct  cast(p.SPERSON as integer) Parties_id,\ncast(p.NNUMNIF as varchar(35)) Parties_Rut,\ncast(p.TAPELLI as varchar(100))Parties_name,\ncast(null as varchar(10)) party_subtype_cd,\ncast(null as varchar(10)) pary_type_cd,\ncast(null as varchar(80)) party_type_desc,\n1 dummy,\n'axis' src_sys_cd\nfrom cdp_stg_dwh.sisaxis_PAGOSINITRAMI t\ninner join\ncdp_ods.sisaxis_personas p  \non t.SPERSON=p.SPERSON and t.NTRAMIT <> 1) src\nleft outer join\n(select 1 dummy,max(dim_other_party_key) max_sid from cdp_dwh.dim_other_party_t) lkp_max_id\non src.dummy=lkp_max_id.dummy)\nwhere rnk=1"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "SELECT dim_other_party_key,party_id,\nsrc_sys_cd\nFROM cdp_dwh.dim_other_party_t where src_sys_cd='axis'"
+    }
+]

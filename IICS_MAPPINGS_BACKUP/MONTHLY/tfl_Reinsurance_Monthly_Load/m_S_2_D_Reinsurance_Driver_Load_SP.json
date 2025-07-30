@@ -1,0 +1,26 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE CDP_DWH.REINSURANCE_DRIVER ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "--changed schema of sp from public --> cdp_dwh as of 18/08/2020\nCALL cdp_dwh.sp_reinsurance_driver() ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE CDP_DWH.REINSURANCE_DRIVER ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "--changed schema of sp from public --> cdp_dwh as of 18/08/2020\nCALL cdp_dwh.sp_reinsurance_driver() ;"
+    }
+]

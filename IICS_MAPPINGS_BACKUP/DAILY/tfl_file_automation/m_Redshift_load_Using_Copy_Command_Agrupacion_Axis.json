@@ -1,0 +1,26 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "Truncate table adp_dwh.cdp_ods.agrupacion_comercial_axis;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_ods.agrupacion_comercial_axis FROM \n's3://$$S3_Bucket_Name/Agrupacion_comercial/Agrupacion_comercial_axis.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "Truncate table adp_dwh.cdp_ods.agrupacion_comercial_axis;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_ods.agrupacion_comercial_axis FROM \n's3://$$S3_Bucket_Name/Agrupacion_comercial/Agrupacion_comercial_axis.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 ;"
+    }
+]

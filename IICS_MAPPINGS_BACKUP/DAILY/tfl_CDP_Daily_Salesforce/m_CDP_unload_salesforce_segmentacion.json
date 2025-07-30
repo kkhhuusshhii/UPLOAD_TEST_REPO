@@ -1,0 +1,7 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "SELECT \nCAST(codigo_axis AS CHARACTER VARYING(105)) AS codigo_axis,\nCAST(segmento_base AS CHARACTER VARYING(11)) AS segmento_base,\nCAST(segmento_mes_actual AS CHARACTER VARYING(11)) AS segmento_mes_actual,\nCAST(vendiendo AS CHARACTER VARYING(2)) AS vendiendo,\nCAST(productivo AS CHARACTER VARYING(2)) AS productivo,\nCAST(creciendo AS CHARACTER VARYING(2)) AS creciendo\nFROM \nCDP_DWH.SALESFORCE_SEGMENTACION;"
+    }
+]

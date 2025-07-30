@@ -1,0 +1,24 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select distinct src_sys_cd,\nbroker_id,\nbroker_name,\ncontact_name,\ncontact_email,\ncontact_phone,\nbroker_rut_num,\nbroker_status,\nbroker_person_type_cd,\nbroker_person_type_cd_desc,\nrec_crt_dtm,\nrec_updt_dtm,\nmax_sid\nfrom(select src.src_sys_cd,\nsrc.broker_id,\n--src.broker_name,\ntranslate(src.broker_name,'#','') as broker_name, --addded as part of DID_238\nsrc.contact_name,\nsrc.contact_email,\nsrc.contact_phone,\nsrc.broker_rut_num,\nsrc.broker_status,\nsrc.broker_person_type_cd,\nsrc.broker_person_type_cd_desc,\nsrc.rec_crt_dtm,\nsrc.rec_updt_dtm,\nLKP_MAX_KEY.max_sid,\nrow_number()over(partition by src.broker_rut_num order by src.rec_updt_dtm desc, src.last_modified_dt desc, src.entity_id desc) as row_cnt from\n(select distinct\nCAST('axis' AS VARCHAR(10)) as src_sys_cd,\nCAST(entity_rut_num as VARCHAR(35)) broker_id,\ncast(entity_name as varchar(100)) broker_name,\ncast(null as varchar(100)) contact_name,\ncast(null as varchar(100)) contact_email,\ncast(null as varchar(35)) contact_phone,\ncast(entity_rut_num as varchar(35)) broker_rut_num,\ncast((case when a.actv_rlshp_ind=0 then 'Inactivo'\n     when a.actv_rlshp_ind=1 and r.fmovfin is null then 'ACTIVO'\n\t when a.actv_rlshp_ind=1 and r.fmovfin is not null then 'DE BAJA' end) as varchar(35)) broker_status,\n--cast(null as varchar(35)) broker_status,\ncast(null as varchar(30)) broker_person_type_cd,\ncast(null as varchar(80)) broker_person_type_cd_desc,\nCURRENT_DATE as rec_crt_dtm,\nCURRENT_DATE as rec_updt_dtm,\nlast_modified_dt as last_modified_dt,\nentity_id as entity_id,\n'Y' as actv_rec_ind,\n1 as dummy from\n(select * from cdp_dwh.broker_branch_rlshp_t \nwhere entity_type_cd='4' and entity_rut_num is not null and entity_rut_num<>'' and src_sys_cd='axis') a\nleft outer join\ncdp_ods.sisaxis_REDCOMERCIAL r \nON a.rlshp_src_id = r.CAGENTE\n) src\nleft outer join\n(select 1 dummy,max(dim_broker_key) max_sid  from  cdp_dwh.dim_broker_t) LKP_MAX_KEY\non src.dummy=LKP_MAX_KEY.dummy) where row_cnt = 1 and broker_id is not null"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "SELECT dim_broker_key,broker_id,src_sys_cd FROM cdp_dwh.dim_broker_t where src_sys_cd='axis'"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[4].dataAdapter.runtimeAttributes.attributes[15]",
+        "name": "Post-sql",
+        "value": "update cdp_dwh.DIM_CLAIM_T\nset    dim_broker_key = BRKR.dim_broker_key\nfrom   cdp_ods.sisaxis_seguros seg JOIN \n       cdp_dwh.DIM_CLAIM_T claim ON claim.policy_id=seg.sseguro JOIN\n       cdp_dwh.broker_branch_rlshp_t BRKR_RLSHP ON seg.cagente=BRKR_RLSHP.rlshp_src_id JOIN \n       cdp_dwh.dim_broker_t BRKR ON BRKR_RLSHP.entity_rut_num=BRKR.broker_id\nwhere  BRKR_RLSHP.entity_type_cd=4\nAND    BRKR_RLSHP.src_sys_cd='axis'\nand    claim.src_sys_cd='axis'\nand    BRKR.src_sys_cd='axis'; /*Added as part of DID-229.*/\n\ncommit;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[5].dataAdapter.runtimeAttributes.attributes[15]",
+        "name": "Post-sql",
+        "value": "update cdp_dwh.DIM_CLAIM_T\nset    dim_broker_key = BRKR.dim_broker_key\nfrom   cdp_ods.sisaxis_seguros seg JOIN \n       cdp_dwh.DIM_CLAIM_T claim ON claim.policy_id=seg.sseguro JOIN\n       cdp_dwh.broker_branch_rlshp_t BRKR_RLSHP ON seg.cagente=BRKR_RLSHP.rlshp_src_id JOIN \n       cdp_dwh.dim_broker_t BRKR ON BRKR_RLSHP.entity_rut_num=BRKR.broker_id\nwhere  BRKR_RLSHP.entity_type_cd=4\nAND    BRKR_RLSHP.src_sys_cd='axis'\nand    claim.src_sys_cd='axis'\nand    BRKR.src_sys_cd='axis'; /*Added as part of DID-229.*/\n\ncommit;"
+    }
+]

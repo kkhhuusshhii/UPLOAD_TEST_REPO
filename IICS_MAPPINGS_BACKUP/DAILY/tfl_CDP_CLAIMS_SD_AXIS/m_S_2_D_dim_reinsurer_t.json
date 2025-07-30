@@ -1,0 +1,12 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "--changed source field for reinsurer_name 8/7/2020\nselect \n--cast(dim_reinsurer_key as integer) as dim_reinsurer_key,\nmax_sid,\nreinsurer_id,\nreinsurer_cod_ccia,\nreinsurer_name,\nreinsurer_rut,\nsrc_sys_code,\nactv_rec_ind,\netl_audit_id\nfrom\n(select\n--NVL(LKP_MAX_KEY.max_sid,0)+num as dim_reinsurer_key,\nLKP_MAX_KEY.max_sid,\nCAST (SRC.reinsurer_id as INTEGER) reinsurer_id,\nSRC.reinsurer_cod_ccia,\nSRC.reinsurer_name,\nSRC.reinsurer_rut,\nSRC.src_sys_code,\nSRC.actv_rec_ind,\nSRC.etl_audit_id\nfrom\n(select\n'axis' as src_sys_code,\n(GEN_CIAS.sperson) as reinsurer_id,\nrow_number() over (order by reinsurer_id) AS num,\n(GEN_CIAS.ccia) as reinsurer_cod_ccia,\n--(PERSONAS.tnombre || ' ' || PERSONAS.tapelli) as reinsurer_name,\n--(isnull(PERSONAS.tnombre,'') || ' ' || isnull(PERSONAS.tapelli,'')) as reinsurer_name,\n--ltrim(rtrim(translate(PERSONAS.tbuscar,'#',''))) as reinsurer_name,\nTRIM(translate(PERSONAS.tbuscar,'#','')) as reinsurer_name,\n(PERSONAS.nnumnif) as reinsurer_rut,\n'Y' actv_rec_ind,\n'0' etl_audit_id,\n1 as dummy\nfrom \ncdp_ods.sisaxis_gen_cias GEN_CIAS\nLEFT JOIN cdp_ods.sisaxis_personas PERSONAS\nON GEN_CIAS.sperson = PERSONAS.sperson\n)SRC\nleft outer join\n(\nselect 1 as dummy,max(dim_reinsurer_key) as  max_sid  from  cdp_dwh.dim_reinsurer_t) LKP_MAX_KEY\non SRC.dummy=LKP_MAX_KEY.dummy \n)"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "SELECT \nDIM.dim_reinsurer_key,\nDIM.src_sys_code,\nDIM.reinsurer_id\nFROM \ncdp_dwh.dim_reinsurer_t  DIM"
+    }
+]

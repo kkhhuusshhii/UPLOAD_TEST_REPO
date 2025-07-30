@@ -1,0 +1,12 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select\nsrc.lob_cd,\nsrc.lob_desc,\nsrc.mkt_lob_key,\nsrc.mkt_lob_cd,\nsrc.mkt_lob_desc,\nsrc.mkt_lob_alt_val,\nsrc.gbl_lob_key,\nsrc.gbl_lob_desc,\nsrc.gbl_lob_cd,\nsrc.actv_rec_ind,\nsrc.src_sys_cd, \nLKP_MAXSID.max_sid\nfrom\n(select\ncast(b.fecu_lob_cd as VARCHAR(10)) as lob_cd,\nb.fecu_lob_cd_desc as lob_desc,\na1.mkt_lob_key,\na1.mkt_lob_cd,\na1.mkt_lob_desc,\na1.mkt_lob_alt_val,\na1.gbl_lob_key,\na1.gbl_lob_desc,\na1.gbl_lob_cd,\n'fecu' src_sys_cd,\n'Y' as actv_rec_ind,\n1 as dummy\nfrom\n(select \n--distinct \nfecu_lob_cd,fecu_lob_cd_desc,\nrow_number() over(partition by fecu_lob_cd order by fecu_report_date) as rowindex  \nfrom\ncdp_stg_dwh.stg_fecu_lob ) b\nleft join  \n(select \ncast('fecu' as VARCHAR(6)) src_sys_cd, \nref_cd,\n--cast(ref_desc as  VARCHAR(80)) as lob_desc,\ncast(mkt_key as  INTEGER) as mkt_lob_key,\ncast(mkt_ref_code as  VARCHAR(10)) as mkt_lob_cd,\ncast(mkt_ref_code_desc as  VARCHAR(80)) as mkt_lob_desc,\ncast(mkt_ref_code_alt_val as VARCHAR(50)) as mkt_lob_alt_val,\ncast(gbl_key as INTEGER) as gbl_lob_key,\ncast(gbl_ref_code as VARCHAR(10)) as gbl_lob_cd,\ncast(gbl_ref_code_desc as VARCHAR(80)) as gbl_lob_desc\nfrom cdp_stg_dwh.stg_tref_code_map_variant a  \nwhere ref_type_cd='fecu_lob' and src_sys_cd='fecu')a1\non a1.ref_cd=b.fecu_lob_cd\nwhere b.rowindex =1\n) src\nleft outer join\n(select 1 as dummy, max(dim_lob_key) as MAX_SID from cdp_dwh.dim_lob_t) LKP_MAXSID\non src.dummy = LKP_MAXSID.dummy\nwhere lob_cd is not null"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "SELECT dim_lob_key,lob_cd,src_sys_cd FROM cdp_dwh.dim_lob_t where src_sys_cd='fecu';"
+    }
+]

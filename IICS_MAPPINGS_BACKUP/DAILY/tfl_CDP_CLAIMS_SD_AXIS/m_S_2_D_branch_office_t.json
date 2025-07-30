@@ -1,0 +1,12 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "SELECT\nCAST(OFC_CD AS VARCHAR(100)),\nCAST(OFC_NAME AS VARCHAR(100)),\nCAST(SRC_SYS_CD AS VARCHAR(10)),\nCAST(REGION_CD AS VARCHAR(20)),\nLKP_QRY.MAX_SID as MAX_SID,\nCOALESCE (CAST (REGION_KEY AS INTEGER),0) as region_key,\nCAST(ofc_identifier AS INTEGER) as OFC_IDENTIFIER\nFROM \n(SELECT DISTINCT COALESCE (mv1.mkt_ref_code,CAST(a.cagente AS VARCHAR(100))) as  ofc_cd,CAST (mv1.ref_desc as VARCHAR(100)) as ofc_name, COALESCE (mv.mkt_ref_code,CAST(d.CPROVIN AS VARCHAR(100))) as region_cd,r.dim_region_key as region_key,'axis' as src_sys_cd,1 as DUMMY , CAST(a.cagente AS VARCHAR(100)) as ofc_identifier \nFROM (select t.*, RANK() OVER (PARTITION BY t.cagente ORDER BY t.rec_crt_dtm DESC) AS RNK  from cdp_stg_dwh.sisaxis_agentes t) as a \nleft join  cdp_ods.sisaxis_personas p on a.SPERSON = p.SPERSON\nleft join  cdp_ods.sisaxis_direcciones d on a.cdomici = d.cdomici and  a.SPERSON = d.SPERSON\nleft join  cdp_stg_dwh.stg_tref_code_map_variant mv on mv.ref_cd = d.CPROVIN and mv.src_sys_cd = 'axis' and mv.ref_type_cd = 'region'\nleft join  cdp_stg_dwh.stg_tref_code_map_variant mv1 on mv1.ref_cd = a.cagente  and mv1.src_sys_cd = 'axis' and mv1.ref_type_cd = 'branch_office'\nleft join  cdp_dwh.dim_region_t r on r.region_cd = mv.mkt_ref_code\nWHERE ctipage=1 and a.rnk = 1 \n) SRC_QRY\nLEFT JOIN (SELECT 1 as DUMMY, MAX(dim_branch_office_key) AS MAX_SID from cdp_dwh.dim_branch_office_t) LKP_QRY\nON LKP_QRY.DUMMY = SRC_QRY.DUMMY"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "select distinct dim_branch_office_key,\nbranch_office_cd,\n--branch_office_name,\nbranch_office_id,\nsrc_sys_cd,\n--dim_region_key,\nrec_crt_dtm\n--rec_updt_dtm,\n--actv_rec_ind,\n--etl_audit_id,\n--branch_office_region_cd\nfrom\ncdp_dwh.dim_branch_office_t \nwhere \nsrc_sys_cd='axis'"
+    }
+]

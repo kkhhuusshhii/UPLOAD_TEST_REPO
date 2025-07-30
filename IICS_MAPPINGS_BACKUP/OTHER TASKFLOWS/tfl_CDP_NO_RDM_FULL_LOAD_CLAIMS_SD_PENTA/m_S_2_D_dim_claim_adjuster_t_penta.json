@@ -1,0 +1,18 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select \nadjuster_id,\nadjuster_rut_num,\nadjuster_name,\nadjuster_type_desc,\nadjuster_office_cd,\nadjuster_office_name,\nsrc_sys_cd,\nactv_rec_ind,\nmax_sid\nfrom(SELECT \nsrc.adjuster_id,\nsrc.adjuster_rut_num,\nsrc.adjuster_name,\nsrc.adjuster_type_desc,\nsrc.adjuster_office_cd,\nsrc.adjuster_office_name,\nsrc.src_sys_cd,\n'Y' as actv_rec_ind,\nLKP_MAXSID.max_sid,\nROW_NUMBER()OVER(PARTITION BY src.adjuster_id order by src.rec_crt_dtm desc) rnk\nFROM (\nSELECT \ncast('penta' as varchar(10)) as src_sys_cd,\nCAST(B.adjuster_id AS INTEGER) adjuster_id,\nCAST(B.adjuster_rut_num AS VARCHAR(35)) adjuster_rut_num,\nCAST(B.adjuster_name AS VARCHAR(100)) adjuster_name,\nCAST(B.\"Adjuster Type Description\" AS VARCHAR(80)) adjuster_type_desc,\nCAST (B.adjuster_office_cd AS VARCHAR(10)) adjuster_office_cd ,\nCAST(B.adjuster_office_name AS VARCHAR(100)) adjuster_office_name, \nB.rec_crt_dtm,\n1 dummy\nfrom \n(select distinct \na.Rut as adjuster_id,\na.rut as adjuster_rut_num,\nb.NombrePersona as adjuster_name,\nCASE WHEN a.CLASILIQ=2 THEN 'Directo'\n\t WHEN a.CLASILIQ=1 THEN 'Oficial'\n\t ELSE NULL END \"Adjuster Type Description\",\na.CodOficina as adjuster_office_cd,\nc.ofi_cha_nombre as adjuster_office_name,\na.fecingres as rec_crt_dtm\nfrom \ncdp_ods.snsmst_snsgrl_liquidadores a \nINNER JOIN cdp_ods.grlmst_gnr_personas b\nON a.Rut = b.RutPersona\nINNER JOIN cdp_ods.prdcdg_pro_oficinas c\nON a.CodOficina = c.ofi_tin_codigo\nINNER JOIN  cdp_ods.bd_sinie_x_sin_liqabo d \nON a.rut = d.lab_int_rut\nWHERE a.TipoLiq in (1,3))B\n) src\nleft outer join\n(select 1 as dummy, max(dim_claim_adjuster_key) as MAX_SID from cdp_dwh.dim_claim_adjuster_t) LKP_MAXSID\non src.dummy = LKP_MAXSID.dummy)\nwhere rnk=1;"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "SELECT  \ndim_claim_adjuster_key,\nadjuster_id,\nsrc_sys_cd  \nFROM cdp_dwh.dim_claim_adjuster_t \nwhere src_sys_cd='penta';"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[1].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "delete from cdp_dwh.dim_claim_adjuster_t where src_sys_cd='penta';"
+    }
+]

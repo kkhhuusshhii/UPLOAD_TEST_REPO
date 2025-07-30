@@ -1,0 +1,14 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "call cdp_dwh.sp_pricing_monitoring_final_fact_table();"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "call cdp_dwh.sp_pricing_monitoring_final_fact_table();"
+    }
+]

@@ -1,0 +1,14 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[13]",
+        "name": "preSql",
+        "value": "CALL cdp_dwh.sp_salesforce_detalle_cotizaciones_lt_hogar();"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[13]",
+        "name": "Pre-SQL",
+        "value": "CALL cdp_dwh.sp_salesforce_detalle_cotizaciones_lt_hogar();"
+    }
+]

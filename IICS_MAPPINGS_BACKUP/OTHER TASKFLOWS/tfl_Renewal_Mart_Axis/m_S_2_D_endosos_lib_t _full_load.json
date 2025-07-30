@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select SSEGURO,\n\tCOD_ENDOSO,\n\treplace(TDESCRIP,CHR(10),' ') as TDESCRIP,\n\tENDOSO_AGRUP,\n\tmax_sid\nfrom(\n\tselect SSEGURO,\n\tCOD_ENDOSO,\n\tTDESCRIP,\n\tENDOSO_AGRUP,\n\tmax_sid \nfrom\n(select SSEGURO,\n\tCOD_ENDOSO,\n\tTDESCRIP,\n   case when COD_ENDOSO IN (Select distinct new_prod_lib from cdp_stg_dwh.renewals_param_axis where new_prod_lib IS NOT NULL) THEN 'NUEVA PROD'\n\twhen COD_ENDOSO IN (Select distinct aju_lib from cdp_stg_dwh.renewals_param_axis where aju_lib IS NOT NULL) THEN 'AJUSTE'\n\twhen COD_ENDOSO IN (Select distinct cancel_lib from cdp_stg_dwh.renewals_param_axis where cancel_lib IS NOT NULL) THEN 'CANCELACION'\n\twhen COD_ENDOSO IN (Select distinct anul_lib from cdp_stg_dwh.renewals_param_axis where anul_lib IS NOT NULL) THEN  'ANULACION'\n\twhen COD_ENDOSO IN (Select distinct reha_lib from cdp_stg_dwh.renewals_param_axis where reha_lib IS NOT NULL) THEN 'REHABILITACION'\n\twhen COD_ENDOSO IN (Select distinct pror_lib from cdp_stg_dwh.renewals_param_axis where pror_lib IS NOT NULL) THEN 'PRORROGA'\n\twhen COD_ENDOSO IN (Select distinct modif_lib from cdp_stg_dwh.renewals_param_axis where modif_lib IS NOT NULL) THEN 'MODIFICACION'\n\twhen COD_ENDOSO IN (Select distinct otro_lib from cdp_stg_dwh.renewals_param_axis where otro_lib IS NOT NULL) THEN 'OTRO ENDOSO'\n        else 'NO CLASIFICADO'end as ENDOSO_AGRUP,\n\t     LKP_MAX_KEY.max_sid \n\tfrom\n(\nSELECT \tT1.SSEGURO,\n\t\tcast(T2.CMOTMOV as Integer) AS COD_ENDOSO,\n\t\tT2.TDESCRIP AS TDESCRIP\n\t\tFROM cdp_stg_dwh.base_lib T1\nLEFT JOIN (\n\tSELECT A.SSEGURO, A.CMOTMOV, A.TDESCRIP \nFROM cdp_ods.sisaxis_movseguro A\n\tINNER JOIN (\n\t\tSELECT SSEGURO, MAX(NMOVIMI) AS NMOVIMI \nFROM cdp_ods.sisaxis_movseguro GROUP BY SSEGURO) B\n\t\tON A.SSEGURO = B.SSEGURO\n\t\tAND A.NMOVIMI = B.NMOVIMI\n\t\t) T2\nON T1.SSEGURO = T2.SSEGURO\nORDER BY SSEGURO)src\nleft outer join \n(select 1 dummy,max(endosos_lib_key) max_sid  from  cdp_stg_dwh.endosos_lib) LKP_MAX_KEY\non LKP_MAX_KEY.dummy=1)\nwhere SSEGURO is not null\n)"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.endosos_lib;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[2].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.endosos_lib;\ncommit;\n"
+    }
+]

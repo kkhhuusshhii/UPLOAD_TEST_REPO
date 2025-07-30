@@ -1,0 +1,31 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "SELECT distinct \n    CAST(MAX_SID AS                    BIGINT)                   llave_direccion ,\n    CAST('axis' AS                     CHARACTER VARYING(30)) AS sistema_origen,\n    CAST(NVL(llave_datos_cliente,0) AS BIGINT)                  AS llave_datos_cliente,\n    CAST(sperson AS                    INT)                     AS sperson,\n    CAST(cprovin AS                    BIGINT)                  AS cod_region,\n    CAST(cciudad AS                    BIGINT)                  AS cod_ciudad,\n    CAST(cpoblac AS                    BIGINT)                  AS cod_comuna,\n    CAST(cpostal AS                    BIGINT)                  AS cod_postal,\n    CAST(tdomici AS                    CHARACTER VARYING(1000)) AS direccion_completa,\n    CAST(csiglas AS                    CHARACTER VARYING(1000)) AS tipo_via,\n    CAST(tnomvia AS                    CHARACTER VARYING(1000)) AS descripcion_calle,\n    CAST(nnumvia AS                    CHARACTER VARYING(1000)) AS numero,\n    CAST(tcomple AS                    CHARACTER VARYING(1000)) AS complemento,\n    CAST(fgisx AS DOUBLE PRECISION)                             AS latitud,\n    CAST(fgisy AS DOUBLE PRECISION)                             AS longitud,\n    CAST(max_cdomici AS INT)                                    AS ind_vigencia,\n    CAST(ctipdir AS     INT)                                    AS tipo_direccion,\n    CAST(cdomici AS     BIGINT)                                 AS consecutivo_direccion\nFROM\n    (   SELECT\n            dim_datos_cliente.llave_datos_cliente ,\n            base.sperson,\n            cprovin,\n            cciudad,\n            cpoblac,\n            CASE\n                WHEN cpostal IN ('.',\n                                 ' ',\n                                 'undefined')\n                THEN NULL\n                ELSE cpostal\n            END AS cpostal,\n            UPPER(tdomici) AS tdomici ,\n            csiglas,\n            UPPER(tnomvia)AS tnomvia,\n            nnumvia,\n            UPPER(tcomple)AS tcomple,\n            fgisx,\n            fgisy,\n            cdomici,\n            base.ctipdir,\n            CASE\n                WHEN max_cdomici IS NOT NULL\n                THEN '1'\n                ELSE '0'\n            END AS max_cdomici\n        FROM\n            (   SELECT\n                    sperson,\n                    cprovin,\n                    cciudad,\n                    cpoblac,\n                    cpostal,\n                    tdomici,\n                    csiglas,\n                    tnomvia,\n                    nnumvia,\n                    tcomple,\n                    fgisx,\n                    fgisy,\n                    cdomici,\n                    c.ctipdir\n                FROM\n                    (   SELECT\n                            sperson,\n                            cprovin,\n                            cciudad,\n                            cpoblac,\n                            cpostal,\n                            REPLACE(tdomici, '\"', '') AS tdomici,\n                            csiglas,\n                            REPLACE(tnomvia,'\"', '') AS tnomvia,\n                            nnumvia,\n                            REPLACE(tcomple, '\"', '') AS tcomple,\n                            fgisx,\n                            fgisy,\n                            cdomici,\n                            ctipdir\n                        FROM\n                            cdp_ods.sisaxis_direcciones)C\n                ) base\n        LEFT JOIN\n            (   SELECT\n                    sperson ,\n                    ctipdir,\n                    MAX(cdomici) max_cdomici\n                FROM\n                    cdp_ods.sisaxis_direcciones\n                GROUP BY\n                    sperson ,\n                    ctipdir )max_cdomici\n        ON\n            base.sperson=max_cdomici.sperson\n        AND base.cdomici=max_cdomici.max_cdomici\n        AND base.ctipdir=max_cdomici.ctipdir\n        INNER JOIN\n            data_clientes_cl.cdm_cl_dim_datos_cliente_t dim_datos_cliente\n        ON\n            dim_datos_cliente.sperson=base.sperson )driver\nLEFT JOIN\n    (   SELECT\n            MAX(llave_direccion) AS MAX_SID\n        FROM\n            data_clientes_cl.cdm_cl_dim_direccion_t ) LKP\nON\n    1 = 1"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[13]",
+        "name": "preSql",
+        "value": "Truncate table data_clientes_cl.cdm_cl_dim_direccion_t;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[13]",
+        "name": "Pre-SQL",
+        "value": "Truncate table data_clientes_cl.cdm_cl_dim_direccion_t;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[4].dataAdapter.oprRuntimeAttributes.attributes[27]",
+        "name": "postSql",
+        "value": "call \"data_clientes_cl\".\"sp_cl_dim_direccion_replace_name\" () "
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[4].dataAdapter.runtimeAttributes.attributes[27]",
+        "name": "Post-Sql",
+        "value": "call \"data_clientes_cl\".\"sp_cl_dim_direccion_replace_name\" () "
+    }
+]

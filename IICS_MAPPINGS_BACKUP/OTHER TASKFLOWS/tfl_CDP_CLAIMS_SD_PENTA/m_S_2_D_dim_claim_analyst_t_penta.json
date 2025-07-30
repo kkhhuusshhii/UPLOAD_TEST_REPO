@@ -1,0 +1,18 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select dim_claim_analyst_key,claim_analyst_id,src_sys_cd,analyst_profile_desc from cdp_dwh.dim_claim_analyst_t \n where src_sys_cd='penta'--"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[14].dataAdapter.object.customQuery",
+        "value": "select \nclaim_analyst_identifier,\nclaim_analyst_rut_num,\nanalyst_profile_description,\nanalyst_name,\nrec_crt_dtm,\nmax_sid,\nsrc_sys_cd\nfrom\n(SELECT\nsrc.claim_analyst_identifier,\nsrc.claim_analyst_rut_num,\nsrc.analyst_profile_description,\nsrc.analyst_name,\nsrc.rec_crt_dtm,\nsrc.src_sys_cd,\n1 AS DUMMY,\nROW_NUMBER() OVER (PARTITION BY src.claim_analyst_identifier,src.src_sys_cd,src.analyst_profile_description ORDER BY src.rec_crt_dtm DESC ) AS RNK\nfrom\n(\nselect  \ndistinct \nCAST(a.RutUsuario AS INTEGER) as claim_analyst_identifier\n,CAST(a.RutUsuario AS VARCHAR(35)) as claim_analyst_rut_num\n,CAST('Claim Analyst' AS VARCHAR(80)) as analyst_profile_description\n,CAST(b.Nombre AS VARCHAR(100)) as analyst_name\n,CAST('penta' AS VARCHAR(10)) as src_sys_cd\n,a.fectransac as rec_crt_dtm\nfrom cdp_ods.snsmst_sinpag_aprpagdet a\nleft join cdp_ods.rlsmst_usuarios b \non a.RutUsuario=b.rut\n)src\n)main_src\nLEFT JOIN (SELECT 1 as DUMMY, max(dim_claim_analyst_key) AS MAX_SID from cdp_dwh.dim_claim_analyst_t) LKP_TGT\nON LKP_TGT.DUMMY=main_src.DUMMY\nWHERE main_src.RNK =1;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[10].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "delete from cdp_dwh.dim_claim_analyst_t  \n where src_sys_cd='penta';\ncommit;"
+    }
+]

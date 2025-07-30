@@ -1,0 +1,26 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE adp_dwh.cdp_stg_dwh.renewals_param_axis;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_stg_dwh.renewals_param_axis FROM 's3://$$S3_Bucket_Name/renewals_param_file/Param' IAM_ROLE '$$AWS_IAM_ROLE' maxerror 15 delimiter ',' csv QUOTE '\"' IGNOREHEADER 1 ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE adp_dwh.cdp_stg_dwh.renewals_param_axis;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_stg_dwh.renewals_param_axis FROM 's3://$$S3_Bucket_Name/renewals_param_file/Param' IAM_ROLE '$$AWS_IAM_ROLE' maxerror 15 delimiter ',' csv QUOTE '\"' IGNOREHEADER 1 ;"
+    }
+]

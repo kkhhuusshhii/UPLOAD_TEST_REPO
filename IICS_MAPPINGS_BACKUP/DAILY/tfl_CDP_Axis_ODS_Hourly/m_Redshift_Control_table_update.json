@@ -1,0 +1,14 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "update cdp_ods_hourly_portal.cdp_ods_hourly_control set Status='Succeded', Run_End_date=current_timestamp where status='Running';"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "update cdp_ods_hourly_portal.cdp_ods_hourly_control set Status='Succeded', Run_End_date=current_timestamp where status='Running';"
+    }
+]

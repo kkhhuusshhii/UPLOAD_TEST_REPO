@@ -1,0 +1,26 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "truncate table adp_dwh.cdp_stg_dwh.parameter_pricing;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_stg_dwh.parameter_pricing \nFROM 's3://$$S3_Bucket_Name/Pricing/execution_parameter_pricing.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "truncate table adp_dwh.cdp_stg_dwh.parameter_pricing;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_stg_dwh.parameter_pricing \nFROM 's3://$$S3_Bucket_Name/Pricing/execution_parameter_pricing.csv' \nIAM_ROLE '$$AWS_IAM_ROLE' maxerror 5 delimiter '|' IGNOREHEADER 1 null as '\\0';"
+    }
+]

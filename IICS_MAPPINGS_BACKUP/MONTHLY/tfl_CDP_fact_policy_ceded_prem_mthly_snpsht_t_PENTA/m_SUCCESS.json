@@ -1,0 +1,7 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "select * from cdp_rdm.CDP_DRIVER_SCHEDULE where 1=2"
+    }
+]

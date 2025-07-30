@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select CAST(cie_sseguro AS DECIMAL(38,10)) AS cie_sseguro , \nsum(pagos_uf) as pagos_uf, sum(recuperos_uf) as recuperos_uf, sum(provision_uf) as provision_uf\nfrom(\nselect cie_sseguro, cie_mon_seg, percon, cast(pagos_uf as numeric(25,10)), cast(recuperos_uf  as numeric(25,10)), cast(provision_uf as numeric(25,10))\nfrom \n(\nselect\ts.cie_sseguro  ,\n        s.cie_mon_seg,\n        cast(s.cie_per_con as integer) percon,\n        sum(cast(s.cie_mto_mo as numeric (25,10)) * fx.uf_lcl_curr_clsng_val) pagos_uf,\n\t\t0 as recuperos_uf,\n\t\t0 as provision_uf\nfrom cdp_ods.siscierres_sin_ciemen_tbl s \nleft join cdp_dwh.curr_conv_t fx \n                        ON ( s.cie_mon_seg = fx.curr_cd  \n                      and (cast(s.cie_per_con as integer) = cast(replace(TRUNC(fx.vltn_dtm),'-','') as integer) )\n                      and 'axis' = fx.src_sys_cd  \n                      and fx.curr_conv_frequency_cd = 'Monthly' )\nwhere \ts.cie_est_proceso=1\nand\ts.cie_tip_pro =  1       \n-- and s.cie_sseguro= <SSEGURO current row>\ngroup by cie_sseguro,cie_mon_seg,percon\n---------------------------------------------------------------------------------------------\nUNION ALL\n---------------------------------------------------------------------------------------------\nselect\ts.cie_sseguro  ,\n        s.cie_mon_seg,\n        cast(s.cie_per_con as integer) percon,\n\t\t0 as pagos_uf,\n        sum(cast(s.cie_mto_mo as numeric (25,10)) * fx.uf_lcl_curr_clsng_val) as recuperos_uf,\n\t\t0 as provision_uf\nfrom cdp_ods.siscierres_sin_ciemen_tbl s \nleft join cdp_dwh.curr_conv_t fx \n                        ON ( s.cie_mon_seg = fx.curr_cd  \n                      and cast(s.cie_per_con as integer) = cast(replace(TRUNC(fx.vltn_dtm),'-','') as integer) \n                      and 'axis' = fx.src_sys_cd  \n                      and fx.curr_conv_frequency_cd = 'Monthly' )\nwhere \ts.cie_est_proceso=1\nand\ts.cie_tip_pro =  2       \n--and s.cie_sseguro= <SSEGURO current row>\ngroup by cie_sseguro,cie_mon_seg,percon\n-------------------------------------------------------------------------------------------\nUNION ALL\n-------------------------------------------------------------------------------------------\n\nselect\ts.cie_sseguro  ,\n        s.cie_mon_seg,\n        cast(s.cie_per_con as integer) percon,\n\t\t0 as pagos_uf,\n\t\t0 as recuperos_uf,\n        sum(cast(s.cie_mto_mo as numeric (25,10)) * fx.uf_lcl_curr_clsng_val) as provision_uf \nfrom cdp_ods.siscierres_sin_ciemen_tbl s \nleft join cdp_dwh.curr_conv_t fx \n                        ON ( s.cie_mon_seg = fx.curr_cd  \n                      and cast(s.cie_per_con as integer) = cast(replace(TRUNC(fx.vltn_dtm),'-','')  as integer)\n                      and 'axis' = fx.src_sys_cd  \n                      and fx.curr_conv_frequency_cd = 'Monthly' )\nwhere \ts.cie_est_proceso=1\nand\ts.cie_tip_pro =  3       \n--and s.cie_sseguro= <SSEGURO current row>\nand s.cie_per_con = (select max (cie_per_con)\n                          from cdp_ods.siscierres_sin_ciemen_tbl\n                          where cie_est_proceso=1\n                          and\tcie_tip_pro =  3   \n                          and   cie_sseguro= s.cie_sseguro\n                          group by cie_sseguro)\ngroup by cie_sseguro,cie_mon_seg,percon\n)\n)\ngroup by cie_sseguro"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "truncate table cdp_stg_dwh.incurrido_retenido_ult;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "truncate table cdp_stg_dwh.incurrido_retenido_ult;"
+    }
+]

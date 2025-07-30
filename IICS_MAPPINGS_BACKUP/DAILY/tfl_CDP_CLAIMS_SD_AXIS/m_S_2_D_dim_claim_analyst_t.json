@@ -1,0 +1,12 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select dim_claim_analyst_key,claim_analyst_id,src_sys_cd,analyst_profile_desc from cdp_dwh.dim_claim_analyst_t \n where src_sys_cd='axis'--"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[14].dataAdapter.object.customQuery",
+        "value": "select distinct\nclaim_analyst_identifier,\nclaim_analyst_rut_num,\nanalyst_profile_description,\nanalyst_name,\nrec_crt_dtm,\nmax_sid,\nsrc_sys_cd\nfrom\n(SELECT\nsrc.claim_analyst_identifier,\nsrc.claim_analyst_rut_num,\nsrc.analyst_profile_description,\ntranslate(src.analyst_name,'#','') as analyst_name,\nsrc.rec_crt_dtm,\nsrc.src_sys_cd,\n1 AS DUMMY,\nROW_NUMBER() OVER (PARTITION BY src.claim_analyst_identifier,src.src_sys_cd,src.analyst_profile_description ORDER BY src.rec_crt_dtm DESC ) AS RNK\nfrom\n(select  \ndistinct \nCAST(p.SPERSON AS INTEGER) as claim_analyst_identifier\n,CAST(p.NNUMNIF AS VARCHAR(35)) as claim_analyst_rut_num\n,CAST('Claim Analyst' AS VARCHAR(80)) as analyst_profile_description\n,CAST(p.tbuscar AS VARCHAR(100)) as analyst_name\n,CAST('axis' AS VARCHAR(10)) as src_sys_cd\n,p.rec_crt_dtm as rec_crt_dtm\nfrom cdp_ods.sisaxis_siniestros s \ninner join cdp_ods.sisaxis_tramitadores t\non s.CTRAMIT = t.CTRAMIT\ninner join cdp_stg_dwh.sisaxis_personas p\non t.SPERSON = p.SPERSON\n\nunion\n \nselect\ndistinct  \nCAST(p.SPERSON AS INTEGER) as claim_analyst_identifier\n,CAST(p.NNUMNIF AS VARCHAR(35)) as analyst_rut_number\n,CAST('Spare Parts Analyst' AS VARCHAR(80)) as analyst_profile_description\n,CAST(p.tbuscar AS VARCHAR(100)) as claim_analyst_name\n,CAST('axis' AS VARCHAR(10)) as src_sys_cd\n,u.rec_crt_dtm as rec_crt_dtm\nfrom \ncdp_stg_dwh.sisaxis_usuarios u\ninner join cdp_ods.sissiniestro_sin_autoriza_ordenes a\non a.usuario_autoriza = u.CUSUARI\ninner join \ncdp_ods.sisaxis_personas p\non u.SPERSON = p.SPERSON \n )src\n)main_src\nLEFT JOIN (SELECT 1 as DUMMY, max(dim_claim_analyst_key) AS MAX_SID from cdp_dwh.dim_claim_analyst_t) LKP_TGT\nON LKP_TGT.DUMMY=main_src.DUMMY\nWHERE main_src.RNK =1;"
+    }
+]

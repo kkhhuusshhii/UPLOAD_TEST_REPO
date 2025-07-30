@@ -1,0 +1,12 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select \nclaim_num,\nclaim_desc,\nsrc_sys_cd,\naccident_desc,\ninspection_desc,\ndim_claim_key,\nactv_rec_ind,\nmax_sid\nfrom \n(\nselect \nsrc.claim_num,\nsrc.claim_desc,\nsrc.src_sys_cd,\nsrc.accident_desc,\nsrc.inspection_desc,\nsrc.dim_claim_key,\nsrc.actv_rec_ind,\nLKP_MAXSID.max_sid,\nrow_number()over(partition by src.claim_num order by src.rec_crt_dtm desc) as row_cnt\nfrom (\nselect \ncast ('axis' as varchar(10)) as src_sys_cd,\ncast(A.NSINIES as varchar(35)) as claim_num,\ncast(A.TSINIES as varchar(4000)) as claim_desc,\ncast('' AS varchar(255)) inspection_desc,\nCAST(A.TNTFREF AS varchar(500)) accident_desc,\ncast(B.dim_claim_key as integer)dim_claim_key,\ncast('Y' as char(1))as actv_rec_ind,\n1 as dummy,\na.rec_crt_dtm\nfrom CDP_STG_DWH.sisaxis_siniestros A\nleft join \n(select dim_claim_key,claim_num from cdp_dwh.dim_claim_t where src_sys_cd='axis') B\non A.NSINIES=B.claim_num)SRC\nleft outer join\n(select 1 as dummy, max(claim_txt_key) as MAX_SID from cdp_dwh.claim_txt_t) LKP_MAXSID\non src.dummy = LKP_MAXSID.dummy) where row_cnt=1"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "select claim_txt_key,claim_num,src_sys_cd  from cdp_dwh.claim_txt_t"
+    }
+]

@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select cast(SSEGURO as BIGINT)SSEGURO,\n\t\tcast(POLIZA as integer) POLIZA,\n\t\tcast(ITEM as integer) ITEM,\n\t\tcast(CRAMO as integer) CRAMO,\n\t\tdate(INI_VIG)as INI_VIG,\n\t\tdate(FANULAC)as FANULAC,\n\t\tdate(FCARPRO) as FCARPRO,\n\t\tdate(FVENCIM) as FVENCIM,\n\t\tdate(FIN_VIG_ORIG) as FIN_VIG_ORIG,\n\t\tdate(FIN_VIG_ACT) as FIN_VIG_ACT,\n\t\tdatediff(days,INI_VIG,FIN_VIG_ACT) as DIAS_VIGENTE,\n\t\tdatediff(days,INI_VIG,FIN_VIG_ORIG) as DIAS_SUSCRITOS,\n\t\tcast(NRO_MASIVO as varchar(300))as NRO_MASIVO,\n\t\tcast(ID_SUCURSAL as integer)as ID_SUCURSAL,\n\t\tmax_sid \nfrom\n(select SSEGURO,\n\t\tPOLIZA,\n\t\tITEM,\n\t\tCRAMO,\n\t\tINI_VIG,\n\t\tFANULAC,\n\t\tFCARPRO,\n\t\tFVENCIM,\n\t\tcase when(FIN_VIG_ORIG is null and FIN_VIG_ACT is not null) then FIN_VIG_ACT else FIN_VIG_ORIG end as FIN_VIG_ORIG,\n\t\tFIN_VIG_ACT,\n\t\tNRO_MASIVO,\n\t\tID_SUCURSAL,\n\t\tLKP_MAX_KEY.max_sid \nfrom\n(SELECT SSEGURO,\n       NPOLIZA AS POLIZA,\n       NCERTIF AS ITEM,\n       CRAMO,\n       FEFECTO AS INI_VIG,\n       FANULAC,\n       FCARPRO,\n       FVENCIM,\n       CASE\n               WHEN CDURACI = 0 THEN FCARANU\n               WHEN FVENCIM IS NULL THEN FCARPRO\n               ELSE FVENCIM\n       END AS FIN_VIG_ORIG,\n\t   case when FANULAC is not null then FANULAC\n\t   when FANULAC is null and FVENCIM is not null then FVENCIM\n\t   else FCARPRO end as FIN_VIG_ACT,\n                NPROPM AS NRO_MASIVO,\n\t   TO_NUMBER(SUBSTRing(CAGENTE,LENGTH(CAGENTE)-2,3),'999')  ID_SUCURSAL \n\n       FROM cdp_ods.SISAXIS_SEGUROS\n       WHERE DATE(FEFECTO) >= '2010-01-01'\n\t--AND DATEPART(FEFECTO) < &FECHA_FIN \n\t   AND CRAMO = 6  /* ONLY line of business VEHICLES*/ \n\t   AND NCERTIF > 0\nORDER BY SSEGURO)src\nleft outer join \n(select 1 dummy,max(base_lib_key) max_sid  from  cdp_stg_dwh.base_lib) LKP_MAX_KEY\non LKP_MAX_KEY.dummy=1)\nwhere SSEGURO is not null"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.base_lib;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[2].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.base_lib;\ncommit;"
+    }
+]

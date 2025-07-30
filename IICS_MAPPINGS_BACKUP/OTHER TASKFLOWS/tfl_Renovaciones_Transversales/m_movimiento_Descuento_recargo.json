@@ -1,0 +1,7 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "SELECT \nperiodo_renovacion,\ntipo_movimiento,\nid_ramo,\nrut_corredor,\nnumero_poliza,\nid_seguro,\nnumero_certificado,\nporcentaje_aplicado,\nvalor_monto_aplicado,\nporcentaje_siniestralidad,\nprima_neta_original,\nprima_neta_final,\nestado,\nusuario,\nfecha_aplicacion,\nid_categoria from movimiento_Descuento_recargo"
+    }
+]

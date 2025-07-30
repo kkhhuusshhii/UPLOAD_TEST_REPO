@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "SELECT SSEGURO,CAGENTE,\n\t\tCORREDOR_RUT,\n\t\tCORREDOR,\n\t\tmax_sid\nfrom(\nSELECT SSEGURO,CAGENTE,\n\t\tCORREDOR_RUT,\n\t\tCORREDOR,\n\t\tLKP_MAX_KEY.max_sid\nfrom\n(SELECT\tT1.SSEGURO,T2.CAGENTE,\n\t\tSUBSTRING(T2.NNUMNIF,1,LENGTH(T2.NNUMNIF)-1) AS CORREDOR_RUT,\n\t\tSUBSTRING(T2.TBUSCAR,1,LENGTH(T2.TBUSCAR)-2) AS CORREDOR\n\t\nFROM\tcdp_stg_dwh.base_lib T1\nLEFT JOIN (\n\tSELECT B.SSEGURO,C.NNUMNIF,C.TBUSCAR, A.CAGENTE\n\tFROM cdp_ods.SISAXIS_AGENTES A\n\tLEFT JOIN cdp_ods.SISAXIS_SEGUROS B\n\tON A.CAGENTE = B.CAGENTE\n\tLEFT JOIN cdp_ods.SISAXIS_PERSONAS C\n\tON A.SPERSON = C.SPERSON) T2\nON T1.SSEGURO = T2.SSEGURO\n)src\nleft outer join \n(select 1 dummy,max(corredores_lib_key) max_sid  from  cdp_stg_dwh.corredores_lib) LKP_MAX_KEY\non LKP_MAX_KEY.dummy=1)\nwhere SSEGURO is not null"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.corredores_lib;\n"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[2].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.corredores_lib;\ncommit;\n"
+    }
+]

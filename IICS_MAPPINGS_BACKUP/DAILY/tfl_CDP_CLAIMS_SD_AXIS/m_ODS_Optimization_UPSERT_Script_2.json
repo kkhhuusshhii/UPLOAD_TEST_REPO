@@ -1,0 +1,14 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "CALL ADP_DWH.CDP_ODS.SP_ODS_OPTIMIZATION_UPSERT_2() ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "CALL ADP_DWH.CDP_ODS.SP_ODS_OPTIMIZATION_UPSERT_2() ;"
+    }
+]

@@ -1,0 +1,12 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "SELECT \nCAST(AA.rut AS VARCHAR(35))   AS broker_rut_num,\nCAST(TO_DATE(AA.fecu_report_date,'DD-MM-YYYY') AS DATE) AS fecu_report_dt,\nCAST(AA.premium_amount AS DECIMAL(25,10)) *1000 AS prem_amt,\nCAST(AA.curr_cd AS VARCHAR(10)) AS curr_cd,\nCAST(AA.name AS VARCHAR(100)) AS broker_name,\nCAST(AA.fecu_lob_cd_desc AS VARCHAR(80)) AS lob_desc,\nCAST(AA.dim_broker_key AS INTEGER) AS dim_broker_key,\nCAST(AA.dim_lob_key AS INTEGER) AS dim_lob_key,\nLKP.MAX_SID\nFROM\n(\nSELECT\nSRC.rut,\nCASE WHEN SRC.fecu_report_date IS NULL OR SRC.fecu_report_date='' THEN NULL\nELSE SRC.fecu_report_date END AS fecu_report_date,\n--TO_DATE(SRC.fecu_report_date,'MM-DD-YYYY')  END AS fecu_report_date,\nSRC.premium_amount,\nSRC.curr_cd ,\ntranslate(SRC.name,'#','') as name,\nTRIM(SRC.fecu_lob_cd_desc) AS fecu_lob_cd_desc,\nNVL(BROKER.dim_broker_key,0) AS dim_broker_key,\nNVL(LOB.dim_lob_key,0) AS dim_lob_key,\n1 AS  DUMMY,\nROW_NUMBER()OVER(PARTITION BY SRC.rut,SRC.fecu_report_date,SRC.premium_amount,SRC.curr_cd,SRC.name,BROKER.dim_broker_key,LOB.dim_lob_key  ORDER BY SRC.fecu_report_date DESC) RNK\nFROM adp_dwh.cdp_stg_dwh.stg_fecu_lob SRC\nLEFT JOIN cdp_dwh.dim_lob_t LOB\nON SRC.fecu_lob_cd=CAST(LOB.lob_cd AS VARCHAR(100))\nAND LOB.src_sys_cd='fecu'\nLEFT JOIN cdp_dwh.dim_broker_t BROKER\nON SRC.RUT=CAST(BROKER.broker_id AS VARCHAR(100))\n--AND BROKER.src_sys_cd='fecu'\n)AA\nLEFT JOIN (SELECT 1 as DUMMY, max(fact_fecu_lob_key) AS MAX_SID from cdp_dwh.fact_fecu_report_by_lob_t) LKP\nON LKP.DUMMY=AA.DUMMY\nWHERE AA.RNK=1"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "SELECT\nSRC.fact_fecu_lob_key,\nSRC.broker_rut_num,\nSRC.fecu_report_dt,\nSRC.prem_amt,\nSRC.curr_cd,\nSRC.broker_name,\nSRC.lob_desc \nFROM cdp_dwh.fact_fecu_report_by_lob_t SRC --"
+    }
+]

@@ -1,0 +1,14 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[4]",
+        "name": "presql",
+        "value": "CALL HDI_DWH_DEV.CDP_STG_DWH.SP_ODS_HOURLY_PORTAL_CDC_AXIS('HDI_DWH_DEV','CDP_STG_DWH','HDI_DWH_DEV','CDP_STG_DWH', 'TIER_2_STAGE');"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[4]",
+        "name": "Pre SQL",
+        "value": "CALL HDI_DWH_DEV.CDP_STG_DWH.SP_ODS_HOURLY_PORTAL_CDC_AXIS('HDI_DWH_DEV','CDP_STG_DWH','HDI_DWH_DEV','CDP_STG_DWH', 'TIER_2_STAGE');"
+    }
+]

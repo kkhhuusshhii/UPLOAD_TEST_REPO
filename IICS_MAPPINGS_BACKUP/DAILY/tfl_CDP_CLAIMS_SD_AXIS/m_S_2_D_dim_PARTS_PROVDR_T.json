@@ -1,0 +1,12 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select\nsrc_sys_cd,\nprovdr_name,\nprovdr_id,\nprovdr_type_cd,\nprovdr_type_desc,\nprovdr_rut_num,\nactv_rec_ind,\nMAX_SID\nfrom\n(\nselect\nsrc.src_sys_cd,\nsrc.provdr_name,\nsrc.provdr_id,\ncast(src.provdr_type_cd as varchar(10)) as provdr_type_cd ,\ncast(src.provdr_type_desc as varchar(80)) as provdr_type_desc,\nsrc.provdr_rut_num,\n'Y' as actv_rec_ind,\nLKP_MAXSID.MAX_SID,\nrow_number() over (partition by src.provdr_id order by src.rec_crt_dtm desc) as row_cnt\nfrom\n(\nselect\ndistinct\ncast('axis' as varchar(10)) as src_sys_cd,\ncast(personas.sperson as integer) as provdr_id,\ncast(personas.tnombre as varchar(100)) as provdr_name,\nNVL(RDM.mkt_ref_code,cast(cast(profesionales_full.cactpro as int) as varchar(10))) as provdr_type_cd,\nNVL(NVL(RDM.mkt_ref_code_desc,RDM.ref_desc),'') as provdr_type_desc,\ncast(personas.nnumnif as varchar(35)) as provdr_rut_num,\npersonas.rec_crt_dtm,\n1 as dummy\nfrom  cdp_stg_dwh.sisaxis_personas personas\ninner join cdp_ods.sisaxis_profesionales profesionales_full\non personas.sperson = profesionales_full.sperson AND profesionales_full.cactpro in (338,340)\nleft join \n(select ref_cd,mkt_ref_code,ref_desc,mkt_ref_code_desc from cdp_stg_dwh.stg_tref_code_map_variant \nwhere ref_type_cd='partsprovider_type' and src_sys_cd = 'axis')RDM\non trim(RDM.ref_cd)=trim(cast(cast(profesionales_full.cactpro as int) as varchar(10)))\n) src\nleft join\n(select 1 as dummy, max(dim_parts_provdr_key) as MAX_SID from cdp_dwh.dim_parts_provdr_t) LKP_MAXSID\non src.dummy = LKP_MAXSID.dummy\n) where row_cnt = 1"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "select src.dim_parts_provdr_key,src.src_sys_cd,src.provdr_id from cdp_dwh.dim_parts_provdr_t src where src.src_sys_cd='axis'"
+    }
+]

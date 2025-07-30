@@ -1,0 +1,26 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE adp_dwh.cdp_stg_dwh.stg_nps_data;\nTRUNCATE TABLE adp_dwh.cdp_stg_dwh.stg_nps_questions;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_stg_dwh.stg_nps_data FROM 's3://$$S3_Bucket_Name/staging-zone-nps/NPS_Data' IAM_ROLE '$$AWS_IAM_ROLE' maxerror 15 delimiter '|' csv QUOTE '\"' IGNOREHEADER 1 ;\ncopy adp_dwh.cdp_stg_dwh.stg_nps_questions FROM 's3://$$S3_Bucket_Name/staging-zone-nps/NPS_Q' IAM_ROLE '$$AWS_IAM_ROLE' maxerror 15 delimiter '|' csv QUOTE '\"' IGNOREHEADER 1 ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE adp_dwh.cdp_stg_dwh.stg_nps_data;\nTRUNCATE TABLE adp_dwh.cdp_stg_dwh.stg_nps_questions;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy adp_dwh.cdp_stg_dwh.stg_nps_data FROM 's3://$$S3_Bucket_Name/staging-zone-nps/NPS_Data' IAM_ROLE '$$AWS_IAM_ROLE' maxerror 15 delimiter '|' csv QUOTE '\"' IGNOREHEADER 1 ;\ncopy adp_dwh.cdp_stg_dwh.stg_nps_questions FROM 's3://$$S3_Bucket_Name/staging-zone-nps/NPS_Q' IAM_ROLE '$$AWS_IAM_ROLE' maxerror 15 delimiter '|' csv QUOTE '\"' IGNOREHEADER 1 ;"
+    }
+]

@@ -1,0 +1,32 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": " TRUNCATE TABLE CDP_DWH.REINSURANCE_ACTIVITY_CODES_T ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy cdp_dwh.reinsurance_activity_codes_t from 's3://$$S3_Bucket_Name/Reinsurance/ABC_code.csv' iam_role '$$AWS_IAM_ROLE' DELIMITER AS '|' IGNOREHEADER 1 REMOVEQUOTES ESCAPE NULL AS '\\0' ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": " TRUNCATE TABLE CDP_DWH.REINSURANCE_ACTIVITY_CODES_T ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "copy cdp_dwh.reinsurance_activity_codes_t from 's3://$$S3_Bucket_Name/Reinsurance/ABC_code.csv' iam_role '$$AWS_IAM_ROLE' DELIMITER AS '|' IGNOREHEADER 1 REMOVEQUOTES ESCAPE NULL AS '\\0' ;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[1].dataAdapter.runtimeAttributes.attributes[15]",
+        "name": "Post-sql",
+        "value": "DELETE FROM CDP_DWH.REINSURANCE_ACTIVITY_CODES_T  WHERE actividad is null;"
+    }
+]

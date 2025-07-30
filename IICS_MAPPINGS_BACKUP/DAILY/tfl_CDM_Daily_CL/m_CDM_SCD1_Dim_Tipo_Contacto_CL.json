@@ -1,0 +1,7 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "SELECT\n    CAST(MAX_SID AS BIGINT)               llave_tipo_contacto  ,\n    CAST('axis' AS CHARACTER VARYING(30)) AS sistema_origen,\n\tCAST(cod_tipo_contacto AS BIGINT)               cod_tipo_contacto  ,\n\tCAST(descripcion_contacto AS CHARACTER VARYING(1000))   descripcion_contacto\n\t\nFROM  \n     \n\t(SELECT 1 as cod_tipo_contacto, 'Email' as descripcion_contacto\n    UNION \n\tSELECT 2 as cod_tipo_contacto, 'Celular' as descripcion_contacto\n    UNION \n\tSELECT 3 as cod_tipo_contacto, 'Telefono_fijo' as descripcion_contacto\n\tUNION \n\tSELECT 4 as cod_tipo_contacto, 'Fono_indeterminado' as descripcion_contacto\n    ) \nLEFT JOIN\n    (   SELECT\n            MAX(llave_tipo_contacto) AS MAX_SID\n        FROM\n            data_clientes_cl.cdm_cl_dim_Tipo_contacto_t ) LKP\nON\n    1 = 1"
+    }
+]

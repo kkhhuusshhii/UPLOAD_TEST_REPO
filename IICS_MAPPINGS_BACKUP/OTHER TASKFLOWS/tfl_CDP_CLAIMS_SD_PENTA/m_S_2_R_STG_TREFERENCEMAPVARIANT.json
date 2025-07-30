@@ -1,0 +1,8 @@
+[
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[2].dataAdapter.runtimeAttributes.attributes[3]",
+        "name": "Pre SQL",
+        "value": "DELETE FROM cdp_rdm.STG_TREFERENCEMAPVARIANT;"
+    }
+]

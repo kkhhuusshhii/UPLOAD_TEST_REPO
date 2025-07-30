@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select \nSSEGURO,\nCAST(SPERSON AS DECIMAL(25,10)) AS SPERSON,\nASEGURADO_RUT,\nmax_sid\nfrom \n(\nselect \nSSEGURO,\nSPERSON,\nASEGURADO_RUT,\nLKP_MAX_KEY.max_sid \nfrom\n(SELECT \tT1.SSEGURO, T2.SPERSON,\nSUBSTRING(T2.NNUMNIF,1,length(T2.NNUMNIF)-1) AS  ASEGURADO_RUT\nFROM\tCDP_STG_DWH.base_lib T1\nLEFT JOIN (\n\tSELECT C1.SSEGURO, C1.SPERSON, C2.NNUMNIF\n\tFROM (\n\t\tSELECT  B1.SSEGURO,\n\t\t B1.SPERSON\t\t\n\t\tFROM cdp_ods.SISAXIS_ASEGURADOS B1\n\t\tINNER JOIN (\n\t\t\tSELECT SSEGURO, MAX(NRIESGO) AS NRIESGO\n\t\t\tFROM cdp_ods.SISAXIS_ASEGURADOS\n\t\t\tWHERE FFECFIN IS NULL\n\t\t\tGROUP BY SSEGURO) B2\n\t\tON B1.SSEGURO = B2.SSEGURO\n\t\tAND B1.NRIESGO = B2.NRIESGO\n\t\tINNER JOIN (SELECT SSEGURO, MAX(NORDEN) AS NORDEN, NRIESGO\n\t\t\tFROM cdp_ods.SISAXIS_ASEGURADOS\n\t\t\tWHERE FFECFIN IS NULL\n\t\t\tGROUP BY SSEGURO, NRIESGO) B3\n\t\tON B1.NORDEN = B3.NORDEN\n\t\tAND B1.SSEGURO = B3.SSEGURO\n\t\tAND B1.NRIESGO = B3.NRIESGO\n\t\twhere B1.FFECFIN IS NULL\n\t) C1\n\tLEFT JOIN cdp_ods.SISAXIS_PERSONAS C2\n\tON C1.SPERSON = C2.SPERSON) T2\nON T2.SSEGURO = T1.SSEGURO\nORDER BY T1.SSEGURO)src\nleft outer join \n(select 1 dummy,max(asegurados_lib_key) max_sid  from  cdp_stg_dwh.asegurados_lib) LKP_MAX_KEY\non LKP_MAX_KEY.dummy=1)\nwhere SSEGURO is not null;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.asegurados_lib;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[2].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.asegurados_lib;"
+    }
+]

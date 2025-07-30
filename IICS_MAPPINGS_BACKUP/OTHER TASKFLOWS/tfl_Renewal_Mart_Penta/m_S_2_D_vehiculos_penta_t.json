@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "SELECT    SSEGURO,\n\t   VEH_CMARCA,\n           VEH_CMODELO,\n           VEH_CLASE,\n           USO,\n           VEH_ANO,\n           PATENTE,\n           VEH_CTIPO,\n           VEH_TIPO,\n           TMODELO,\n           TMARCA,\n           NUM_MOTOR,\n\t   max_sid\nfrom\n(\nSELECT    SSEGURO,\n\t\t   VEH_CMARCA,\n           VEH_CMODELO,\n           VEH_CLASE,\n           USO,\n           VEH_ANO,\n           PATENTE,\n           VEH_CTIPO,\n           VEH_TIPO,\n           TMODELO,\n           TMARCA,\n           NUM_MOTOR,\n\t\t   row_number()over(partition by src.SSEGURO order by src.policy_issue_date desc ) as row_cnt,\n\t\t   LKP_MAX_KEY.max_sid\nfrom\n(\nSELECT    T1.POLIZA  || '-' || T1.ITEM AS SSEGURO,\n         T2.VEH_TIN_MARCA AS VEH_CMARCA,\n           T2.VEH_TIN_MODELO AS VEH_CMODELO,\n           (CASE\n                WHEN T2.VEH_TIN_TIPVEH < 6 THEN 'L'\n                ELSE 'P'\n                END) AS VEH_CLASE,\n           (CASE\n                WHEN T2.VEH_TIN_USOVEH = 2 THEN 'COMERCIAL'\n                WHEN T2.VEH_TIN_USOVEH = 1 THEN 'PARTICULAR'\n                ELSE 'OTRO'\n                END) AS USO,\n           T2.VEH_SMA_ANOFAC AS VEH_ANO,\n           T2.VEH_CHA_PATEN AS PATENTE,\n           T2.VEH_TIN_TIPVEH AS VEH_CTIPO,\n           T5.TVE_CHA_NOMBRE AS VEH_TIPO,\n           T3.MAR_CHA_NOMBRE AS TMARCA,\n           T4.MOD_CHA_MODELO AS TMODELO,\n           T2.VEH_CHA_MOTOR AS NUM_MOTOR,\n\t   T1.policy_issue_date\nFROM cdp_stg_dwh.BASE_PENTA AS T1\n\nLEFT JOIN cdp_ods.bd_produ_x_pro_vehiculo T2\nON T1.POLIZA = T2.VEH_INT_POLIZA\nAND T1.ITEM = T2.VEH_SMA_ITEM\n\nLEFT JOIN (SELECT * FROM cdp_ods.prdcdg_pro_marcaveh WHERE MAR_TIN_ESTADO > 0) T3\nON T2.VEH_TIN_MARCA = T3.MAR_TIN_CODIGO\n\nLEFT JOIN (SELECT * FROM cdp_ods.prdcdg_pro_modelo WHERE MOD_TIN_ESTADO > 0) T4\nON T2.VEH_TIN_MODELO = T4.MOD_SMA_CODMOD\nAND T2.VEH_TIN_MARCA = T4.MOD_TIN_CODMAR\nAND T2.VEH_TIN_TIPVEH = T4.MOD_TIN_TIPVEH\nLEFT JOIN (SELECT * FROM cdp_ods.prdcdg_pro_tipovehi WHERE TVE_TIN_ESTADO > 0) T5\nON T2.VEH_TIN_TIPVEH = T5.TVE_TIN_CODIGO\n)src\nleft outer join \n(select 1 dummy,max(vehiculos_penta_key) max_sid  from  cdp_stg_dwh.vehiculos_penta) LKP_MAX_KEY\non LKP_MAX_KEY.dummy=1)\nwhere SSEGURO is not null and row_cnt=1"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.VEHICULOS_PENTA;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[2].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.VEHICULOS_PENTA;\ncommit;"
+    }
+]

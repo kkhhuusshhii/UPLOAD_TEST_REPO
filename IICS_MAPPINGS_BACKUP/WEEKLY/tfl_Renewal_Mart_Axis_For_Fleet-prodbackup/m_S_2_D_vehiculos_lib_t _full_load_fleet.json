@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select SSEGURO,\n\t\tVEH_CMARCA,\n\t\tVEH_CMODELO,\n\t\tVEH_CLASE,\n\t\tUSO,\n\t\tVEH_ANO,\n\t\tPATENTE,\n\t\tVEH_CTIPO,\n\t\tVEH_TIPO,\n\t\tTMARCA,\n\t\tTMODELO,\n\t\tNUM_MOTOR,\n\t\tmax_sid\nfrom\n(select SSEGURO,\n\t\tVEH_CMARCA,\n\t\tVEH_CMODELO,\n\t\tVEH_CLASE,\n\t\tUSO,\n\t\tcast(VEH_ANO as INTEGER ) as VEH_ANO,\n\t\tPATENTE,\n\t\tVEH_CTIPO,\n\t\tVEH_TIPO,\n\t\tTMARCA,\n\t\tTMODELO,\n\t\tNUM_MOTOR,\n\t\tLKP_MAX_KEY.max_sid\nfrom\n(SELECT\tT1.SSEGURO,\n\t\tT3.CMARCA  AS VEH_CMARCA,\n\t\tT3.SMODELO AS VEH_CMODELO,\n\t\tT3.CTIPVEH AS VEH_CLASE,\n\t\tCASE\n\t\t\tWHEN T2.CUSO = '1' THEN 'PARTICULAR'\n\t\t\tWHEN T2.CUSO = '2' THEN 'COMERCIAL'\n\t\t\tELSE 'DESCONOCIDO'END AS USO,\n\t\tT2.NANOFAB AS VEH_ANO,\n\t\tT2.CMATRIC AS PATENTE,\n\t\tT3.CCLAVEH AS VEH_CTIPO,\n\t\tT7.TCLAVEH AS VEH_TIPO,\n\t\tT5.TMARCA,\n\t\tT6.TMODELO,\n\t\tT2.NMOTOR AS NUM_MOTOR\n\t\t\nFROM cdp_stg_dwh.base_lib T1\n\nLEFT JOIN (\n\tSELECT A1.*\n\tFROM  cdp_ods.sisaxis_autriesgos A1\n\tINNER JOIN (\n\t\tSELECT \tSSEGURO,\n\t\t\t\tMAX(NMOVIMI) AS NMOVIMI,\n\t\t\t\tMAX(NRIESGO) AS NRIESGO\n\t\tFROM cdp_ods.sisaxis_autriesgos\n\t\tGROUP BY SSEGURO) A2\n\tON A1.SSEGURO = A2.SSEGURO\n\tAND A1.NMOVIMI = A2.NMOVIMI\n\tAND A1.NRIESGO = A2.NRIESGO\n\t) T2\nON \tT1.SSEGURO = T2.SSEGURO\n\nLEFT JOIN cdp_ods.sisaxis_autversiones T3\nON\tT2.CVERSION = T3.CVERSION\n\nLEFT JOIN cdp_ods.SISAXIS_AUTCLASEVEHICULOS T4\nON T3.CTIPVEH = T4.CTIPVEH\nAND T3.CCLAVEH = T4.CCLAVEH \n\nLEFT JOIN cdp_ods.sisaxis_autmarcas T5\nON T3.CMARCA = T5.CMARCA\n\nLEFT JOIN cdp_ods.sisaxis_autmodelos T6\nON T3.CMARCA = T6.CMARCA\nAND T3.SMODELO = T6.SMODELO\n\nLEFT JOIN cdp_ods.SISAXIS_AUTCLASEVEHICULOS T7\nON T3.CCLAVEH = T7.CCLAVEH\nAND T7.CTIPVEH = T3.CTIPVEH\n\nORDER BY T1.SSEGURO\n \n)src\nleft outer join \n(select 1 dummy,max(vehiculos_lib_key) max_sid  from  cdp_stg_dwh.vehiculos_lib) LKP_MAX_KEY\non LKP_MAX_KEY.dummy=1)\nwhere SSEGURO is not null"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.vehiculos_lib;\n\n"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[2].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.vehiculos_lib;\ncommit;\n"
+    }
+]

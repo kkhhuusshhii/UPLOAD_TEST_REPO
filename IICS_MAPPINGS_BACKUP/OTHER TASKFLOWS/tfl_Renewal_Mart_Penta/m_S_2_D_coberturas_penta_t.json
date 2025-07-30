@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select SSEGURO,\n\t\tCOB_PLAN,\n\t\tmax_sid \nfrom\n(select SSEGURO,\n\t\tCOB_PLAN,\n\t\trow_number()over(partition by SRC.SSEGURO order by SRC.rec_crt_dtm desc ) as row_cnt,\n\t\tLKP_MAX_KEY.max_sid \n\t\tfrom\n\n(\nSELECT  SSEGURO,sum(COBERTURA_PLAN) AS COB_PLAN, rec_crt_dtm\nFROM\n (SELECT distinct T1.POLIZA  || '-' || T1.ITEM AS SSEGURO,\n      CASE WHEN T2.PRI_TIN_CARD  in  (12,16,17,18,19,21,24,25,26,27,29,49,50,115,116,123,124,125,126,127,\n\t\t\t\t128,129,131,139,148,149,157,158,159,163,171,173) THEN  1 ---RC \n        WHEN T2.PRI_TIN_CARD  in  (30,31,103,104) THEN 2 ---RC_I\n        WHEN T2.PRI_TIN_CARD in  (23) THEN 5 ------RC_E\n        WHEN T2.PRI_TIN_CARD in  (10,11,107,108,137,160,162) THEN 10 -----DM\n        WHEN T2.PRI_TIN_CARD  in  (6,14,109,110,155,161)      THEN 100 ----PT\n        WHEN T2.PRI_TIN_CARD  in  (7,122,138,164) THEN 1000 ---RO\n        ELSE 0 \n        END  as COBERTURA_PLAN ,\n        T1.policy_issue_date as rec_crt_dtm\nFROM cdp_stg_dwh.BASE_PENTA T1\nLEFT JOIN \n(SELECT distinct A1.PRI_INT_POLIZA,A1.PRI_SMA_ITEM,A1.PRI_TIN_CARD\n from    cdp_ods.bd_produ_x_pro_primas A1\n            INNER JOIN cdp_stg_dwh.BASE_PENTA A2\n            ON A1.PRI_INT_POLIZA = A2.POLIZA\n\t\t AND A1.PRI_SMA_ITEM = A2.ITEM) T2 ON T2.PRI_INT_POLIZA = T1.POLIZA AND T2.PRI_SMA_ITEM = T1.ITEM\n\t\t )\ngroup by SSEGURO,rec_crt_dtm) SRC\nleft outer join \n(select 1 dummy,max(COBERTURAS_PENTA_key) max_sid  from  cdp_stg_dwh.COBERTURAS_PENTA ) LKP_MAX_KEY\non LKP_MAX_KEY.dummy=1)\nwhere SSEGURO is not null and row_cnt=1"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[9]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.COBERTURAS_PENTA;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[2].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "TRUNCATE TABLE cdp_stg_dwh.COBERTURAS_PENTA;\ncommit;\n"
+    }
+]

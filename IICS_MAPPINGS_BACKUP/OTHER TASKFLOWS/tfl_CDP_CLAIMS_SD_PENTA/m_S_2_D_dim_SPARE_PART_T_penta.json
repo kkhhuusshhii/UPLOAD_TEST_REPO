@@ -1,0 +1,18 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select\npart_cd,\npart_desc,\npart_group_cd,\npart_group_desc,\nsrc_sys_cd,\nactv_rec_ind,\nMAX_SID\nfrom\n(\nselect\nsrc.part_cd,\nsrc.part_desc,\nsrc.part_group_cd,\nsrc.part_group_desc,\nsrc.src_sys_cd,\n'Y' as actv_rec_ind,\nLKP_MAXSID.MAX_SID,\nrow_number() over (partition by src.src_sys_cd,src.part_cd order by src.fecha_modif_alta_reg desc) as row_cnt\nfrom\n(\nselect \ndistinct \ncast (NVL(NVL(stcmv.mkt_ref_code,rdmd.codigo_grupo||'|'||cast(rdmd.codigo as varchar(20))),' ') as varchar(20)) as part_cd,\ncast (NVL(NVL(stcmv.mkt_ref_code_desc,stcmv.ref_desc),' ') as varchar(80)) as part_desc,\ncast (NVL(NVL(RDM.mkt_ref_code,rdmd.codigo_grupo),' ') as varchar(10)) as part_group_cd,\ncast (NVL(NVL(RDM.mkt_ref_code_desc,RDM.ref_desc),' ') as varchar(80)) as part_group_desc, \ncast('penta' as varchar(10)) as src_sys_cd,\nrdmd.fecha_modif_alta_reg,\n1 as dummy\nfrom  \ncdp_ods.bd_sinie_x_rsin_tempario_partes_piezas rdmd\nleft join \n(select ref_cd,ref_desc,mkt_ref_code,mkt_ref_code_desc from cdp_stg_dwh.stg_tref_code_map_variant \nwhere ref_type_cd='autopart' and src_sys_cd = 'penta') stcmv\non trim(stcmv.ref_cd)=trim(rdmd.codigo_grupo||'|'||rdmd.codigo)\nleft join \n(select ref_cd,ref_desc,mkt_ref_code,mkt_ref_code_desc from cdp_stg_dwh.stg_tref_code_map_variant \nwhere ref_type_cd='autopart_group' and src_sys_cd = 'penta')RDM\non trim(rdmd.codigo_grupo)=trim(RDM.ref_cd)\n) src\nleft join\n(select 1 as dummy, max(dim_part_key) as MAX_SID from cdp_dwh.dim_spare_parts_t) LKP_MAXSID\non src.dummy = LKP_MAXSID.dummy\n) where row_cnt = 1"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "select \nSRC.dim_part_key,\nSRC.part_cd,\nSRC.src_sys_cd\nfrom cdp_dwh.dim_spare_parts_t SRC\nwhere SRC.src_sys_cd='penta'"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[4].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "delete from cdp_dwh.dim_spare_parts_t where src_sys_cd='penta';\ncommit;"
+    }
+]

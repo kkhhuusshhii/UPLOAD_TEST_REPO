@@ -1,0 +1,18 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select \nsrc_sys_cd,\nbroker_branch_rlshp_id,\nsales_exec_rlshp_id,\nsales_exec_name,\nsales_exec_rut_num,\nsales_exec_id,\ndim_branch_office_key,\ndim_broker_key,\nactv_rec_ind,\nltst_rec_ind,\nmax_sid\nfrom\n(\nselect \nSRC.src_sys_cd,\nSRC.broker_branch_rlshp_id,\nSRC.sales_exec_rlshp_id,\nSRC.sales_exec_name,\nSRC.sales_exec_rut_num,\nSRC.sales_exec_id,\nSRC.dim_branch_office_key,\nSRC.dim_broker_key,\nSRC.actv_rec_ind,\nSRC.ltst_rec_ind,\nLKP_MAX_KEY.max_sid,\nSRC.op,\nrow_number()over(partition by SRC.broker_branch_rlshp_id order by SRC.COD_REL desc,\ncase when SRC.op='D' then 1 when SRC.op='U' then 2 when SRC.op='I' then 3 end ASC ) as row_cnt\nfrom\n(\nselect\ncast('axis' as varchar(10)) as src_sys_cd,\ncast(EJE.COD_CORR as varchar(24)) as broker_branch_rlshp_id,\ncast(EJE.COD_EJE as varchar(10)) as sales_exec_rlshp_id,\ncast(dim.ENTITY_NAME as varchar(100)) as sales_exec_name,\ncast(dim.ENTITY_RUT_NUM as varchar(35)) as sales_exec_rut_num,\ncast(dim.entity_id as varchar(50)) as sales_exec_id,\ncast(dim_branch_office.dim_branch_office_key as integer) as dim_branch_office_key,\ncast(broker.dim_broker_key as integer) dim_broker_key,\n'Y' as actv_rec_ind,\n'Y' as ltst_rec_ind,\ncast(EJE.COD_REL as integer) as COD_REL,\nop\nfrom cdp_stg_dwh.sisaxis_REL_CORR_EJE EJE -- need to add stage table\ninner join cdp_dwh.broker_branch_rlshp_t dim\non cast(EJE.COD_EJE as varchar(10))=dim.rlshp_src_id\nand dim.entity_type_cd = 5\nleft join (select ref_cd,mkt_ref_code from cdp_stg_dwh.stg_tref_code_map_variant where ref_type_cd='branch_office' and src_sys_cd = 'axis') branch_office\non cast(right(COD_CORR,3) as integer)=cast (branch_office.ref_cd as integer)\nleft join \n(select dim_branch_office_key,branch_office_cd from cdp_dwh.dim_branch_office_t where src_sys_cd='axis') dim_branch_office\non NVL(branch_office.mkt_ref_code,right( '00000000' + cast( cast(right(COD_CORR,3) as integer) as varchar), 8)) = dim_branch_office.branch_office_cd\nleft join\n(select rlshp_src_id,entity_rut_num from cdp_dwh.broker_branch_rlshp_t where src_sys_cd='axis') dim1\non EJE.COD_CORR=dim1.rlshp_src_id\nleft join \n(select dim_broker_key,broker_id from cdp_dwh.dim_broker_t where src_sys_cd='axis') broker\non dim1.entity_rut_num=broker.broker_id\n)SRC\nleft outer join \n(select 1 dummy,max(rlshp_key) max_sid  from  cdp_dwh.sales_exec_broker_branch_rlshp_t) LKP_MAX_KEY\non LKP_MAX_KEY.dummy=1)\nwhere broker_branch_rlshp_id is not null  and sales_exec_rlshp_id is not null and row_cnt=1 and op<>'D' \norder by broker_branch_rlshp_id,src_sys_cd"
+    },
+    {
+        "type": "customQuery",
+        "path": "content.transformations[2].dataAdapter.object.customQuery",
+        "value": "select * from cdp_dwh.sales_exec_broker_branch_rlshp_t \nwhere ltst_rec_ind='Y' and src_sys_cd='axis'\norder by src_sys_cd,broker_branch_rlshp_id,rlshp_key"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[12].dataAdapter.runtimeAttributes.attributes[15]",
+        "name": "Post-sql",
+        "value": "update cdp_dwh.sales_exec_broker_branch_rlshp_t set actv_rec_ind='N' \nfrom  cdp_dwh.sales_exec_broker_branch_rlshp_t trg inner join cdp_stg_dwh.sisaxis_REL_CORR_EJE src\non trg.broker_branch_rlshp_id = src.COD_CORR and trg.sales_exec_rlshp_id = src.COD_EJE\nand src.op='D'"
+    }
+]

@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select 'd' as dummy;"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.oprRuntimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "CALL cdp_dwh.sp_fact_new_renewal_logic();\nCALL cdp_dwh.sp_fact_renewal_vehicle_individual();"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[0].dataAdapter.runtimeAttributes.attributes[10]",
+        "name": "Post-sql",
+        "value": "CALL cdp_dwh.sp_fact_new_renewal_logic();\nCALL cdp_dwh.sp_fact_renewal_vehicle_individual();"
+    }
+]

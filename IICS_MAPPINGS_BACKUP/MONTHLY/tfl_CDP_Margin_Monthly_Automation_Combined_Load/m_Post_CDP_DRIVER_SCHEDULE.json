@@ -1,0 +1,31 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[1].dataAdapter.object.customQuery",
+        "value": "select * from cdp_rdm.CDP_DRIVER_SCHEDULE where 1=2"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[1].dataAdapter.oprRuntimeAttributes.attributes[4]",
+        "name": "Pre SQL",
+        "value": "update cdp_rdm.CDP_DRIVER_SCHEDULE \nset run_stts_cd='S', run_end_dtm=current_timestamp\nwhere run_stts_cd='R';"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[1].dataAdapter.oprRuntimeAttributes.attributes[5]",
+        "name": "Post SQL",
+        "value": "INSERT INTO cdp_rdm.CDP_DRIVER_SCHEDULE\n(audit_id, job, run_stts_cd, valuation_start_dtm, valuation_end_dtm, run_start_dtm, run_end_dtm, row_insert_dtm)\nVALUES ((select * from (select max(audit_id)+1 from cdp_rdm.CDP_DRIVER_SCHEDULE )AA),\n'CDP',\n'P',\n(select * from (select max(cast(run_end_dtm as date)) from cdp_rdm.CDP_DRIVER_SCHEDULE)BB),\n(select * from (select date_add(max(cast(run_end_dtm as date)), INTERVAL 1 DAY) from cdp_rdm.CDP_DRIVER_SCHEDULE)CC),\nnull,\nnull,\ncurrent_timestamp);"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[1].dataAdapter.runtimeAttributes.attributes[4]",
+        "name": "Pre SQL",
+        "value": "update cdp_rdm.CDP_DRIVER_SCHEDULE \nset run_stts_cd='S', run_end_dtm=current_timestamp\nwhere run_stts_cd='R';"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[1].dataAdapter.runtimeAttributes.attributes[5]",
+        "name": "Post SQL",
+        "value": "INSERT INTO cdp_rdm.CDP_DRIVER_SCHEDULE\n(audit_id, job, run_stts_cd, valuation_start_dtm, valuation_end_dtm, run_start_dtm, run_end_dtm, row_insert_dtm)\nVALUES ((select * from (select max(audit_id)+1 from cdp_rdm.CDP_DRIVER_SCHEDULE )AA),\n'CDP',\n'P',\n(select * from (select max(cast(run_end_dtm as date)) from cdp_rdm.CDP_DRIVER_SCHEDULE)BB),\n(select * from (select date_add(max(cast(run_end_dtm as date)), INTERVAL 1 DAY) from cdp_rdm.CDP_DRIVER_SCHEDULE)CC),\nnull,\nnull,\ncurrent_timestamp);"
+    }
+]

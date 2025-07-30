@@ -1,0 +1,19 @@
+[
+    {
+        "type": "customQuery",
+        "path": "content.transformations[0].dataAdapter.object.customQuery",
+        "value": "select \nbroker_rut_num,\nagent_code,\nbroker_name,\ngrupo,\nrelated_broker,\nactv_rec_ind,\nyear,\nmonth,\nLKP_MAXSID.MAX_SID as max_sid\nfrom\n(\nselect distinct\ncast(rut_corredor as VARCHAR(35))broker_rut_num,\ncast(codigo_agente as varchar(100)) as agent_code,\ncast(nombre_corredor as VARCHAR(100))broker_name,\ncast(grupo as VARCHAR(100)) as grupo, \ncast(coligado as VARCHAR(100))related_broker,\ncast(ano as INTEGER) as year,\ncast(mes as INTEGER) as month,\ncast('Y' as VARCHAR(1)) actv_rec_ind,\n1 as dummy\nfrom cdp_stg_dwh.stg_corredor_grupos)src\nleft outer join\n(select 1 as dummy, max(dim_pln_broker_group_key) as MAX_SID from cdp_dwh.dim_pln_broker_group_t) LKP_MAXSID\non src.dummy = LKP_MAXSID.dummy"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[2].dataAdapter.oprRuntimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "--Delete logic PRESQL Target\nDELETE FROM cdp_dwh.dim_pln_broker_group_t\nWHERE year||month in (select ano||mes from cdp_stg_dwh.stg_corredor_grupos)"
+    },
+    {
+        "type": "pre/post-sql",
+        "path": "content.transformations[2].dataAdapter.runtimeAttributes.attributes[14]",
+        "name": "Pre-sql",
+        "value": "--Delete logic PRESQL Target\nDELETE FROM cdp_dwh.dim_pln_broker_group_t\nWHERE year||month in (select ano||mes from cdp_stg_dwh.stg_corredor_grupos)"
+    }
+]
